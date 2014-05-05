@@ -1,0 +1,22 @@
+{
+  "author": "Casey Robinson <casey@rampantmonkey.com> (https://rampantmonkey.com)",
+  "name": "twui",
+  "description": "Responsive web interface to Taskwarrior",
+  "keywords": ["responsive", "web", "ui", "Taskwarrior"],
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/rampantmonkey/node-doublycircular.git"
+  },
+  "main": "./",
+  "scripts": {
+    "test": "make"
+  },
+  "engines": {
+    "node": ">= v0.10.x"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
