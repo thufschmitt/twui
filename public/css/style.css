@@ -23,11 +23,43 @@ body {
   font-size: 1.5em;
 }
 
-.task > span {
+.task div > span {
   padding: 0 0.7em;
   display: block;
   float: left;
   clear: left;
+}
+
+.task div {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.summary {
+  width: 70%;
+  margin-left: 1em;
+}
+
+.due {
+  width: 1.5em;
+  height: 1.5em;
+  max-width: 20%;
+  position: relative;
+  left: 0.25em;
+  border: 0.2em solid #ccc;
+  border-radius: 1.5em;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 2em;
+}
+
+.due p {
+  margin: 0;
+  padding: 0;
+  text-indent: none;
+  position: relative;
+  top: 0.1em;
+  font-weight: 800;
 }
 
 .left-pane {
@@ -68,16 +100,19 @@ body {
   overflow-y: scroll;
 }
 
-.high {
-  color: red
+.high * {
+  color: red;
+  border-color: red;
 }
 
-.medium {
-  color: green
+.medium * {
+  color: green;
+  border-color: green;
 }
 
-.low {
-  color: blue
+.low * {
+  color: blue;
+  border-color: blue;
 }
 
 .tag {

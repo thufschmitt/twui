@@ -34,9 +34,16 @@ function taskJsonToHTML(task) {
   output += '" id="'
   output += task.uuid
   output += '">'
+  output += '<div class="due">'
+  if(task.due) {
+    output += '<p>&lang;</p>'
+  }
+  output += '</div>'
+  output += '<div class="summary">'
   output += formatIfDefined(task, 'project')
   output += formatIfDefined(task, 'description')
   output += taskTagsToHTML(task.tags)
+  output += '</div>'
   output += '</div>\n'
   return output
 }
