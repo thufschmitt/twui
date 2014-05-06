@@ -33,6 +33,15 @@ body {
   overflow: auto;
   height: 100vh;
 }
+.task-detail {
+  width: 67%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow-x: none;
+  overflow-y: scroll;
+}
 .high {
   color: red
 }
