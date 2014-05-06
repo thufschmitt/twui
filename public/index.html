@@ -2,10 +2,14 @@
 <meta charset="UTF-8">
 
 <title>twui</title>
-<div id="task-list"> </div>
+<div class="task-list" id="task-list"> </div>
+
 <style type="text/css">
   * {
     font-family: Sans-Serif;
+  }
+  body {
+    overflow: hidden;
   }
   .group:after {
     content: '.';
@@ -15,17 +19,26 @@
     visibility: hidden;
   }
   .task {
-    background: #222;
-    padding: 0.2em;
+    background: #333;
     width: 100%;
-    height: 3.5em;
+    padding: 0.7em 0;
+    min-height: 2.9em;
     color: #ccc;
     font-size: 1.5em;
   }
   .task > span {
+    padding: 0 0.7em;
     display: block;
     float: left;
     clear: left;
+  }
+  .task-list {
+    width: 33%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: auto;
+    height: 100vh;
   }
   .high {
     color: red
@@ -39,6 +52,7 @@
   .tag {
     color: purple;
     font-size: 0.8em;
+    margin-right: 0.5em;
   }
   .tag:before {
     background-image: url(/images/tag.svg);
