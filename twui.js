@@ -12,13 +12,11 @@ var app = http.createServer( function (req, res) {
   res.end('<p>Hello.</p>')
 })
 
-var tasks = taskFetcher.fetch()
-
 when(taskFetcher.fetch(), function (tasks) {
   console.log(tasks)
 }, function (err) {
-  console.error('could not read file')
+  console.error(err)
 })
 
-app.listen(PORT)
-console.log('running at localhost:' + PORT + '...')
+//app.listen(PORT)
+//console.log('running at localhost:' + PORT + '...')
