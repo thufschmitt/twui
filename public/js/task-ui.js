@@ -31,6 +31,8 @@ function taskJsonToHTML(task) {
   var output = ''
   output += '<div class="task group'
   output += taskPriorityToClass(task.priority)
+  output += '" id="'
+  output += task.uuid
   output += '">'
   output += formatIfDefined(task, 'project')
   output += formatIfDefined(task, 'description')
@@ -46,13 +48,34 @@ function taskNotDone(task) {
   return true
 }
 
-function processJsonFeed(data) {
-  return data.filter(taskNotDone)
-             .map(taskJsonToHTML)
+function formatTaskDetail(task) {
+  return '<h1>' + task.description + '</h1>'
 }
+
+function deactivateTask(taskid) {
+  $('#' + taskid).removeClass('active')
+}
+
+function activateTask(task) {
+  deactivateTask(currentTask.uuid)
+  $('#task-detail').html(formatTaskDetail(task))
+  $('#' + task.uuid).addClass('active')
+  currentTask = task
+}
+
+var theTasks = []
+var currentTask
 
 $(document).ready( function () {
   $.get("/tasks", function (data) {
-    $('#task-list').html(processJsonFeed(data))
+    theTasks = data.filter(taskNotDone)
+    currentTask = theTasks[0]
+    $('#task-list').html(theTasks.map(taskJsonToHTML))
+    theTasks.forEach(function (t) {
+      $('#' + t.uuid).click(function() {
+        activateTask(t)
+      })
+    })
+    activateTask(currentTask)
   })
 });
