@@ -104,7 +104,6 @@ function taskUrgency(task) {
     }
   }
 
-  console.log(urgency)
   return urgency
 }
 
