@@ -107,11 +107,48 @@ function taskUrgency(task) {
   return urgency
 }
 
+function prettyDate(d) {
+  var year  = d.slice(0,4)
+  var month = d.slice(4,6)
+  var day   = d.slice(6,8)
+  var date = new Date(Date.UTC(year, month, day))
+  return date.toLocaleDateString();
+}
+
+function taskPropertiesTable (task) {
+  var output = ''
+  output += '<table class="task-properties">'
+  output += '<tr><td>Description</td><td>' + task.description + '</td></tr>'
+  if(task.project) { output += '<tr><td>Project</td><td>' + task.project + '</td></tr>' }
+  output += '<tr><td>Status</td><td>' + task.status + '</td></tr>'
+  output += '<tr><td>Urgency</td><td>' + Math.round(taskUrgency(task)*10000)/10000 + '</td></tr>'
+  if(task.priority) { output += '<tr><td>Priority</td><td>' + task.priority + '</td></tr>' }
+  output += '<tr><td>Added on</td><td>' + prettyDate(task.entry) + '</td></tr>'
+  if(task.due) { output += '<tr><td>Due on</td><td>' + prettyDate(task.due) + '</td></tr>' }
+  if(task.annotations) {
+    if(task.annotations.length === 1) {
+      output += '<tr><td>Annotation</td><td>' + task.annotations[0].description + '</td></tr'
+    } else {
+      var tmp = task.annotations.map(function (a) {
+        return '<td>' + a.description + '</td>'
+      })
+      tmp[0] = '<td rowspan="' + tmp.length + '">Annotations</td>' + tmp[0]
+      output += tmp.reduce(function (acc, el) {
+        return acc + '<tr>' + el + '</tr>'
+      }, '')
+      tmp = undefined
+    }
+  }
+  output += '</table>'
+  return output
+}
+
 function formatTaskDetail(task) {
   var output = ''
   output += '<h1>' + task.description + '</h1>'
   output += formatIfDefined(task, 'project')
   output += taskTagsToHTML(task.tags)
+  output += taskPropertiesTable(task)
   return output
 }
 

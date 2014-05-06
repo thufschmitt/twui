@@ -141,3 +141,24 @@ body {
   max-width: 75%;
   margin: 1em auto;
 }
+
+table {
+  border-collapse: collapse;
+  max-width: 85%;
+  margin: 1em auto;
+  border: 1px solid #ddd;
+}
+
+td {
+  padding: .75em;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background: #eee;
+}
+
+td:last-child {
+  font-weight: 100;
+}
