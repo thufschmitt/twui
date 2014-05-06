@@ -47,9 +47,25 @@ function serveTasks(res) {
   res.end(JSON.stringify(taskList))
 }
 
+function reloadTasks() {
+  when(taskFetcher.fetch(), function (tasks) {
+    taskList = tasks
+  }, function (err) {
+    console.error(err)
+  })
+}
+
+function handleRefresh(res) {
+  reloadTasks()
+  res.writeHead(202)
+  res.end()
+}
+
 var app = http.createServer( function (req, res) {
   if (/^\/tasks[\/.*]?/.test(req.url)) {
     serveTasks(res)
+  } else if ('/refresh' === req.url) {
+    handleRefresh(res)
   } else {
     var path
     if (req.url === '/') {
@@ -61,11 +77,6 @@ var app = http.createServer( function (req, res) {
   }
 })
 
-when(taskFetcher.fetch(), function (tasks) {
-  taskList = tasks
-}, function (err) {
-  console.error(err)
-})
-
+reloadTasks()
 app.listen(PORT)
 console.log('running at localhost:' + PORT + '...')
