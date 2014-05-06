@@ -15,7 +15,9 @@
   "engines": {
     "node": ">= v0.10.x"
   },
-  "dependencies": {},
+  "dependencies": {
+    "promised-io": "*"
+  },
   "devDependencies": {
     "mocha": "*"
   }

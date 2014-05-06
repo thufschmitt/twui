@@ -1,4 +1,6 @@
 var http = require('http')
+var when = require('promised-io/promise').when;
+var taskFetcher = require('./lib/task_fetcher');
 
 var PORT = 2718
 
@@ -10,16 +12,12 @@ var app = http.createServer( function (req, res) {
   res.end('<p>Hello.</p>')
 })
 
-var spawn = require('child_process').spawn
-var taskwarrior = spawn('task', ['export'])
+var tasks = taskFetcher.fetch()
 
-var tasks = ""
-taskwarrior.on('data', function (data) {
-  tasks += data.toString()
-})
-
-taskwarrior.on('close', function () {
+when(taskFetcher.fetch(), function (tasks) {
   console.log(tasks)
+}, function (err) {
+  console.error('could not read file')
 })
 
 app.listen(PORT)
