@@ -1,7 +1,7 @@
 function taskTagsToHTML(tags) {
   if (!tags || tags.length === 0) { return '' }
   var formattedTags = tags.map(function(tag) { return '<span class="tag">' + tag + '</span>' }).join('\n')
-  return '<span class="tag-list">' + formattedTags + '</span>'
+  return '<span class="group tag-list">' + formattedTags + '</span>'
 }
 
 function formatIfDefined(task, field) {
@@ -108,7 +108,11 @@ function taskUrgency(task) {
 }
 
 function formatTaskDetail(task) {
-  return '<h1>' + task.description + '</h1>'
+  var output = ''
+  output += '<h1>' + task.description + '</h1>'
+  output += formatIfDefined(task, 'project')
+  output += taskTagsToHTML(task.tags)
+  return output
 }
 
 function deactivateTask(taskid) {

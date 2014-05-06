@@ -81,7 +81,6 @@ body {
 }
 
 .tag {
-  color: purple;
   font-size: 0.8em;
   margin-right: 0.5em;
 }
@@ -111,9 +110,33 @@ body {
   background: #222
 }
 
-h1 {
+#task-detail {
+  font-size: 2em;
+}
+
+#task-detail .tag-list {
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
+
+#task-detail .tag {
+  font-size: 0.9em;
   font-weight: 100;
-  font-size: 3em;
+  display: inline-block;
+}
+
+#task-detail .project {
+  font-size: 1.1em;
+  width: 100%;
+  display: block;
+  margin-bottom: 0.75em;
+  text-align: center;
+}
+
+#task-detail h1 {
+  font-weight: 100;
+  font-size: 1.5em;
   text-align: center;
   max-width: 75%;
   margin: 1em auto;
