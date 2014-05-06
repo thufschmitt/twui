@@ -1,9 +1,11 @@
 * {
   font-family: Sans-Serif;
 }
+
 body {
   overflow: hidden;
 }
+
 .group:after {
   content: '.';
   display: block;
@@ -11,6 +13,7 @@ body {
   clear: both;
   visibility: hidden;
 }
+
 .task {
   background: #333;
   width: 100%;
@@ -19,12 +22,14 @@ body {
   color: #ccc;
   font-size: 1.5em;
 }
+
 .task > span {
   padding: 0 0.7em;
   display: block;
   float: left;
   clear: left;
 }
+
 .left-pane {
   width: 33%;
   position: absolute;
@@ -33,15 +38,18 @@ body {
   overflow: auto;
   height: 100vh;
 }
+
 .menu {
   width: 100%;
   background: #444;
   display: inline-block;
 }
+
 .button {
   text-align: center;
   padding: 0.5em;
 }
+
 .refresh {
   font-size: 3em;
   color: #ccc;
@@ -49,6 +57,7 @@ body {
   padding: 0.1em 0.35em;
   display: block;
 }
+
 .task-detail {
   width: 67%;
   position: absolute;
@@ -58,20 +67,25 @@ body {
   overflow-x: none;
   overflow-y: scroll;
 }
+
 .high {
   color: red
 }
+
 .medium {
   color: green
 }
+
 .low {
   color: blue
 }
+
 .tag {
   color: purple;
   font-size: 0.8em;
   margin-right: 0.5em;
 }
+
 .tag:before {
   background-image: url(/images/tag.svg);
   background-size: 0.7em 0.7em;
@@ -84,6 +98,7 @@ body {
   top: 0.25em;
   content: ' ';
 }
+
 .project {
   text-transform: uppercase;
   font-size: 0.8em;
@@ -91,9 +106,11 @@ body {
   margin-left: 0.2em;
   margin-bottom: 0.2em;
 }
+
 .active {
   background: #222
 }
+
 h1 {
   font-weight: 100;
   font-size: 3em;
