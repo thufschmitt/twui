@@ -48,6 +48,24 @@ function taskNotDone(task) {
   return true
 }
 
+var coefficients = {
+  priority: 6.0
+}
+
+function taskUrgency(task) {
+  var urgency = 0.0
+  switch(task.priority) {
+    case 'H':
+      urgency += coefficients.priority
+    case 'M':
+      urgency += coefficients.priority
+    case 'L':
+      urgency += coefficients.priority
+  }
+
+  return urgency
+}
+
 function formatTaskDetail(task) {
   return '<h1>' + task.description + '</h1>'
 }
@@ -68,7 +86,10 @@ var currentTask
 
 $(document).ready( function () {
   $.get("/tasks", function (data) {
-    theTasks = data.filter(taskNotDone)
+    theTasks = data.filter(taskNotDone).sort(function(a, b) {
+      return taskUrgency(b) - taskUrgency(a)
+    })
+
     currentTask = theTasks[0]
     $('#task-list').html(theTasks.map(taskJsonToHTML))
     theTasks.forEach(function (t) {
