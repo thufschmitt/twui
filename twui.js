@@ -57,7 +57,7 @@ function reloadTasks() {
 
 function handleRefresh(res) {
   reloadTasks()
-  res.writeHead(202)
+  res.writeHead(202, {"content-type": "text/plain"})
   res.end()
 }
 
