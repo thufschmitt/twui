@@ -3,10 +3,91 @@
 
 <title>twui</title>
 <div id="task-list"> </div>
+<style type="text/css">
+  * {
+    font-family: Sans-Serif;
+  }
+  .group:after {
+    content: '.';
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+  .task {
+    background: #222;
+    padding: 0.2em;
+    width: 100%;
+    height: 3em;
+    color: #ccc;
+    font-size: 1.5em;
+  }
+  .task > span {
+    display: block;
+    float: left;
+    clear: left;
+  }
+  .high {
+    color: red
+  }
+  .medium {
+    color: green
+  }
+  .low {
+    color: blue
+  }
+  .tag {
+    color: purple;
+    font-size: 0.8em;
+  }
+  .project {
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: 100;
+  }
+
+</style>
 <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
 <script type="text/javascript">
+  function taskTagsToHTML(tags) {
+    if (!tags || tags.length === 0) { return '' }
+    var formattedTags = tags.map(function(tag) { return '<span class="tag">' + tag + '</span>' }).join('\n')
+    return '<span class="tag-list">' + formattedTags + '</span>'
+  }
+
+  function formatIfDefined(task, field) {
+    if(!task[field]) { return '' }
+    return '<span class="' + field + '">' + task[field] + '</span>\n'
+  }
+
+  function taskPriorityToClass(priority) {
+    var output = ' '
+    switch(priority){
+      case 'H':
+        output += 'high'
+        break
+      case 'M':
+        output += 'medium'
+        break
+      case 'L':
+        output += 'low'
+        break
+      default:
+        output = ''
+    }
+    return output
+  }
+
   function taskJsonToHTML(task) {
-    return '<div class="task">' + task.description + '</div>\n'
+    var output = ''
+    output += '<div class="task group'
+    output += taskPriorityToClass(task.priority)
+    output += '">'
+    output += formatIfDefined(task, 'project')
+    output += formatIfDefined(task, 'description')
+    output += taskTagsToHTML(task.tags)
+    output += '</div>\n'
+    return output
   }
 
   function taskNotDone(task) {
