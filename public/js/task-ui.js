@@ -125,6 +125,7 @@ function taskPropertiesTable (task) {
   if(task.priority) { output += '<tr><td>Priority</td><td>' + task.priority + '</td></tr>' }
   output += '<tr><td>Added on</td><td>' + prettyDate(task.entry) + '</td></tr>'
   if(task.due) { output += '<tr><td>Due on</td><td>' + prettyDate(task.due) + '</td></tr>' }
+  output += '<tr><td>UUID</td><td>' + task.uuid + '</td></tr>'
   if(task.annotations) {
     if(task.annotations.length === 1) {
       output += '<tr><td>Annotation</td><td>' + task.annotations[0].description + '</td></tr'
