@@ -1,0 +1,66 @@
+* {
+  font-family: Sans-Serif;
+}
+body {
+  overflow: hidden;
+}
+.group:after {
+  content: '.';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.task {
+  background: #333;
+  width: 100%;
+  padding: 0.7em 0;
+  min-height: 2.9em;
+  color: #ccc;
+  font-size: 1.5em;
+}
+.task > span {
+  padding: 0 0.7em;
+  display: block;
+  float: left;
+  clear: left;
+}
+.task-list {
+  width: 33%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: auto;
+  height: 100vh;
+}
+.high {
+  color: red
+}
+.medium {
+  color: green
+}
+.low {
+  color: blue
+}
+.tag {
+  color: purple;
+  font-size: 0.8em;
+  margin-right: 0.5em;
+}
+.tag:before {
+  background-image: url(/images/tag.svg);
+  background-size: 0.7em 0.7em;
+  display: inline-block;
+  background-repeat: no-repeat;
+  padding: 0.1em;
+  height: 0.7em;
+  width: 0.8em;
+  position: relative;
+  top: 0.25em;
+  content: ' ';
+}
+.project {
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: 100;
+}
