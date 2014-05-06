@@ -1,3 +1,29 @@
 <!doctype html>
+<meta charset="UTF-8">
+
 <title>twui</title>
+<div id="task-list"> </div>
 <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript">
+  function taskJsonToHTML(task) {
+    return '<div class="task">' + task.description + '</div>\n'
+  }
+
+  function taskNotDone(task) {
+    if(task.status === 'deleted' || task.status == 'completed') {
+      return false
+    }
+    return true
+  }
+
+  function processJsonFeed(data) {
+    return data.filter(taskNotDone)
+               .map(taskJsonToHTML)
+  }
+
+  $(document).ready( function () {
+    $.get("/tasks", function (data) {
+      $('#task-list').html(processJsonFeed(data))
+    })
+  });
+</script>
