@@ -125,7 +125,21 @@ function activateTask(task) {
 var theTasks = []
 var currentTask
 
-$(document).ready( function () {
+function removeClickHandlers() {
+  $('.task').each(function () {
+    $(this).off('click')
+  })
+}
+
+function attachClickHandlers(taskList) {
+  taskList.forEach(function (t) {
+    $('#' + t.uuid).click(function() {
+      activateTask(t)
+    })
+  })
+}
+
+function fetchData() {
   $.get("/tasks", function (data) {
     theTasks = data.filter(taskNotDone).sort(function(a, b) {
       return taskUrgency(b) - taskUrgency(a)
@@ -133,11 +147,16 @@ $(document).ready( function () {
 
     currentTask = theTasks[0]
     $('#task-list').html(theTasks.map(taskJsonToHTML))
-    theTasks.forEach(function (t) {
-      $('#' + t.uuid).click(function() {
-        activateTask(t)
-      })
-    })
+    attachClickHandlers(theTasks)
     activateTask(currentTask)
+  })
+}
+
+$(document).ready( function () {
+  fetchData()
+  $('#refresh-button').click(function() {
+    removeClickHandlers()
+    $.get("/refresh")
+    fetchData()
   })
 });

@@ -25,13 +25,29 @@ body {
   float: left;
   clear: left;
 }
-.task-list {
+.left-pane {
   width: 33%;
   position: absolute;
   top: 0;
   left: 0;
   overflow: auto;
   height: 100vh;
+}
+.menu {
+  width: 100%;
+  background: #444;
+  display: inline-block;
+}
+.button {
+  text-align: center;
+  padding: 0.5em;
+}
+.refresh {
+  font-size: 3em;
+  color: #ccc;
+  background: #228b22;
+  padding: 0.1em 0.35em;
+  display: block;
 }
 .task-detail {
   width: 67%;
@@ -77,4 +93,11 @@ body {
 }
 .active {
   background: #222
+}
+h1 {
+  font-weight: 100;
+  font-size: 3em;
+  text-align: center;
+  max-width: 75%;
+  margin: 1em auto;
 }
