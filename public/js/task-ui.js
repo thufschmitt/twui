@@ -122,6 +122,32 @@ function prettyDate(d) {
   return date.toLocaleDateString();
 }
 
+function stringToLink(s) {
+  if(/https?\:\/\//.test(s)) {
+    return '<a href="' + s + '">' + s + '</a>'
+  }
+  return s
+}
+
+function buildAnnotationsListing(annotations) {
+  output = ''
+  if(annotations) {
+    if(annotations.length === 1) {
+      output += '<tr><td>Annotation</td><td>' + stringToLink(annotations[0].description) + '</td></tr'
+    } else {
+      var tmp = annotations.map(function (a) {
+        return '<td>' + stringToLink(a.description) + '</td>'
+      })
+      tmp[0] = '<td rowspan="' + tmp.length + '">Annotations</td>' + tmp[0]
+      output += tmp.reduce(function (acc, el) {
+        return acc + '<tr>' + el + '</tr>'
+      }, '')
+      tmp = undefined
+    }
+  }
+  return output
+}
+
 function taskPropertiesTable (task) {
   var output = ''
   output += '<table class="task-properties">'
@@ -133,20 +159,7 @@ function taskPropertiesTable (task) {
   output += '<tr><td>Added on</td><td>' + prettyDate(task.entry) + '</td></tr>'
   if(task.due) { output += '<tr><td>Due on</td><td>' + prettyDate(task.due) + '</td></tr>' }
   output += '<tr><td>UUID</td><td>' + task.uuid + '</td></tr>'
-  if(task.annotations) {
-    if(task.annotations.length === 1) {
-      output += '<tr><td>Annotation</td><td>' + task.annotations[0].description + '</td></tr'
-    } else {
-      var tmp = task.annotations.map(function (a) {
-        return '<td>' + a.description + '</td>'
-      })
-      tmp[0] = '<td rowspan="' + tmp.length + '">Annotations</td>' + tmp[0]
-      output += tmp.reduce(function (acc, el) {
-        return acc + '<tr>' + el + '</tr>'
-      }, '')
-      tmp = undefined
-    }
-  }
+  output += buildAnnotationsListing(task.annotations)
   output += '</table>'
   return output
 }
