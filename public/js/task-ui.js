@@ -164,11 +164,41 @@ function taskPropertiesTable (task) {
   return output
 }
 
+function modifyMenu(task) {
+  var output = ''
+  output += '<ul>'
+  output += '<li id="task-done">&#10004;  [done]</li>'
+  output += '</ul>'
+  return output
+}
+
+function removeTaskModifyHandlers() {
+  $('#task-done').off('click')
+}
+
+function addTaskModifyHandlers(task) {
+  $('#task-done').click(function() {
+    $.ajax({
+      url: '/done',
+      type: 'PUT',
+      contentType: 'application/json; charset=UTF-8',
+      data: JSON.stringify({"uuid": task.uuid}),
+      success: function(result) {
+        alert(task.description + ' is complete!')
+      },
+      error: function(err) {
+        alert('server fail.')
+      }
+    })
+  })
+}
+
 function formatTaskDetail(task) {
   var output = ''
   output += '<h1>' + task.description + '</h1>'
   output += formatIfDefined(task, 'project')
   output += taskTagsToHTML(task.tags)
+  output += modifyMenu(task)
   output += taskPropertiesTable(task)
   return output
 }
@@ -179,8 +209,10 @@ function deactivateTask(taskid) {
 
 function activateTask(task) {
   deactivateTask(currentTask.uuid)
+  removeTaskModifyHandlers()
   $('#task-detail').html(formatTaskDetail(task))
   $('#' + task.uuid).addClass('active')
+  addTaskModifyHandlers(task)
   currentTask = task
 }
 
