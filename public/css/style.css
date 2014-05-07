@@ -197,3 +197,19 @@ tr:nth-child(even) {
 td:last-child {
   font-weight: 100;
 }
+
+ul {
+  display: block;
+  width: 50%;
+  margin: 0.5em auto;
+  list-style: none;
+  text-align: center;
+}
+
+li {
+  display: inline-block;
+  background: #ccc;
+  padding: .6em;
+  border: 1px solid #999;
+  border-radius: 0.1em;
+}
