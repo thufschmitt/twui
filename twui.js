@@ -1,6 +1,7 @@
 var http = require('http')
 var when = require('promised-io/promise').when;
 var taskFetcher = require('./lib/task_fetcher');
+var taskModifier = require('./lib/task_modifier');
 var fs = require('fs')
 var path = require('path')
 var mime = require('mime')
@@ -12,6 +13,11 @@ var taskList
 function send404(response) {
   response.writeHead(404, {'Content-Type': 'text/plain'})
   response.write('Error 404: resource not found.')
+  response.end()
+}
+
+function badRequest(response) {
+  response.writeHead(400, {'Content-Type': 'text/plain'})
   response.end()
 }
 
@@ -62,8 +68,41 @@ function handleRefresh(res) {
 }
 
 var app = http.createServer( function (req, res) {
+  var data
   if (/^\/tasks[\/.*]?/.test(req.url)) {
     serveTasks(res)
+  } else if (/^\/done/.test(req.url)) {
+    if(req.method === 'PUT') {
+      data = ''
+      req.on('data', function(chunk) { data += chunk.toString() })
+      req.on('end', function() {
+        try {
+          var id = JSON.parse(data).uuid
+          when(taskModifier.done(id),
+               function () {
+                 res.writeHead(204, {'content-type': 'application/json'})
+                 res.end()
+               },
+               function (err) {
+                 switch(err) {
+                   case 'internal':
+                     res.writeHead(500)
+                     break
+                   case 'bad uuid':
+                     res.writeHead(400)
+                     break
+                 }
+                 res.writeHead({'content-type': 'text/plain'})
+                 res.end()
+               }
+            )
+        } catch (e) {
+          badRequest(res)
+        }
+      })
+    } else {
+      badRequest(res)
+    }
   } else if ('/refresh' === req.url) {
     handleRefresh(res)
   } else {
