@@ -21,5 +21,9 @@
   },
   "devDependencies": {
     "mocha": "*"
+  },
+  "preferGlobal": "true",
+  "bin": {
+    "twui": "bin/twui"
   }
 }
