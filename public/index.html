@@ -1,16 +1,49 @@
 <!doctype html>
-<meta charset="UTF-8">
+<html ng-app="taskApp">
+  <meta charset="UTF-8">
+  <title>twui</title>
 
-<title>twui</title>
-<div class="left-pane">
-  <div class="menu" id="menu">
-    <a id="refresh-button" class="refresh button">&#8635;</a>
+  <script type="text/javascript" src="js/angular.min.js"></script>
+  <script type="text/javascript">
+    var taskApp = angular.module('taskApp', [])
+    taskApp.controller('TaskCtrl', function($scope, $http){
+      $scope.urgency = function(task) {
+        return taskUrgency(task);
+      }
+      $scope.taskNotDone = function(task) {
+        return taskNotDone(task)
+      }
+      $http.get('/tasks').success(function (data) {
+        $scope.tasks = data
+      });
+    });
+  </script>
+
+
+  <div class="left-pane">
+    <div class="menu" id="menu">
+      <a id="refresh-button" class="refresh button">&#8635;</a>
+    </div>
+    <div class="task-list" id="task-list" ng-controller="TaskCtrl">
+      <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
+        class="task group {{task.priority}}"
+        id="{{task.priority}}">
+        <div class="due">
+          <p ng-if="task.due">&lang;</p>
+        </div>
+        <div class="summary">
+          <span ng-if="task.project" class="project">{{task.project}}</span>
+          <span ng-if="task.description" class="description">{{task.description}}</span>
+          <span ng-if="task.tags && task.tags.length > 0" class="tag-list group">
+            <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="task-list" id="task-list"> </div>
-</div>
-<div class="task-detail" id="task-detail">
-</div>
+  <div class="task-detail" id="task-detail">
+  </div>
 
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="js/task-ui.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <script type="text/javascript" src="js/task-util.js"></script>
+</html>
