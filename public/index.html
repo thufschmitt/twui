@@ -19,12 +19,23 @@
       $scope.refreshTasks = function() {
         $http.get("/refresh")
         setTimeout(function () {
-          $http.get('/tasks').success(function (data) { $scope.tasks = data; $scope.current = $scope.tasks[0] });
+          $http.get('/tasks').success(function (data) { $scope.tasks = data });
         }, 1000)
       }
       $scope.setCurrent = function(t) {
         $scope.current = t
       }
+      $scope.$watch("current", function() {
+        if($scope.current) {
+          var child = document.getElementById('task-list').firstElementChild
+          while(child) {
+            child.classList.remove('active')
+            child = child.nextElementSibling
+          }
+
+          document.getElementById($scope.current.uuid).classList.add('active')
+        }
+      }, true);
       $scope.prettyDate = function(d) {
         var year  = d.slice(0,4)
         var month = d.slice(4,6)
@@ -44,7 +55,7 @@
         <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
           ng-click="setCurrent(task)"
           class="task group {{task.priority}}"
-          id="{{task.priority}}">
+          id="{{task.uuid}}">
           <div class="due">
             <p ng-if="task.due">&lang;</p>
           </div>
