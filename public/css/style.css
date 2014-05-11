@@ -100,17 +100,17 @@ body {
   overflow-y: scroll;
 }
 
-.high * {
+.H * {
   color: red;
   border-color: red;
 }
 
-.medium * {
+.M * {
   color: green;
   border-color: green;
 }
 
-.low * {
+.L * {
   color: blue;
   border-color: blue;
 }

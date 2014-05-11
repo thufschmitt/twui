@@ -1,16 +1,106 @@
 <!doctype html>
-<meta charset="UTF-8">
+<html ng-app="taskApp">
+  <meta charset="UTF-8">
+  <title>twui</title>
 
-<title>twui</title>
-<div class="left-pane">
-  <div class="menu" id="menu">
-    <a id="refresh-button" class="refresh button">&#8635;</a>
-  </div>
-  <div class="task-list" id="task-list"> </div>
-</div>
-<div class="task-detail" id="task-detail">
-</div>
+  <script type="text/javascript" src="js/angular.min.js"></script>
+  <script type="text/javascript">
+    var taskApp = angular.module('taskApp', [])
+    taskApp.controller('TaskCtrl', function($scope, $http){
+      $scope.urgency = function(task) {
+        return taskUrgency(task);
+      }
+      $scope.taskNotDone = function(task) {
+        return taskNotDone(task)
+      }
+      $http.get('/tasks').success(function (data) {
+        $scope.tasks = data
+      });
+      $scope.refreshTasks = function() {
+        $http.get("/refresh")
+        setTimeout(function () {
+          $http.get('/tasks').success(function (data) { $scope.tasks = data });
+        }, 1000)
+      }
+      $scope.setCurrent = function(t) {
+        $scope.current = t
+      }
+      $scope.$watch("current", function() {
+        if($scope.current) {
+          var child = document.getElementById('task-list').firstElementChild
+          while(child) {
+            child.classList.remove('active')
+            child = child.nextElementSibling
+          }
 
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="js/task-ui.js"></script>
+          document.getElementById($scope.current.uuid).classList.add('active')
+        }
+      }, true);
+      $scope.prettyDate = function(d) {
+        var year  = d.slice(0,4)
+        var month = d.slice(4,6)
+        var day   = d.slice(6,8)
+        var date = new Date(Date.UTC(year, month, day))
+        return date.toLocaleDateString();
+      }
+      $scope.finishTask = function(task) {
+        $http.put('/done',
+                  JSON.stringify({"uuid": task.uuid}),
+                  { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+        ).success( function() {
+          $scope.current = undefined
+          $scope.refreshTasks()
+        })
+      }
+    });
+  </script>
+
+  <body ng-controller="TaskCtrl">
+    <div class="left-pane">
+      <div class="menu" id="menu">
+        <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
+      </div>
+      <div class="task-list" id="task-list">
+        <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
+          ng-click="setCurrent(task)"
+          class="task group {{task.priority}}"
+          id="{{task.uuid}}">
+          <div class="due">
+            <p ng-if="task.due">&lang;</p>
+          </div>
+          <div class="summary">
+            <span ng-if="task.project" class="project">{{task.project}}</span>
+            <span ng-if="task.description" class="description">{{task.description}}</span>
+            <span ng-if="task.tags && task.tags.length > 0" class="tag-list group">
+              <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-if="current" class="task-detail" id="task-detail">
+      <h1>{{current.description}}</h1>
+      <p ng-if="current.project" class="project">{{current.project}}</p>
+      <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
+        <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
+      </span>
+      <ul>
+        <li id="task-done" ng-click="finishTask(current)">&#10004;  [done]</li>
+      </ul>
+      <table class="task-properties">
+        <tr><td>Description</td><td>{{current.description}}</td></tr>
+        <tr ng-if="current.project"><td>Project</td><td>{{current.project}}</td></tr>
+        <tr><td>Status</td><td>{{current.status}}</td></tr>
+        <tr><td>Urgency</td><td>{{urgency(current)}}</td></tr>
+        <tr ng-if="current.priority"><td>Priority</td><td>{{current.priority}}</td></tr>
+        <tr><td>Added on</td><td>{{prettyDate(current.entry)}}</td></tr>
+        <tr ng-if="current.due"><td>Due on</td><td>{{prettyDate(current.due)}}</td></tr>
+        <tr><td>UUID</td><td>{{current.uuid}}</td></tr>
+        <tr ng-repeat="ann in current.annotations"><td></td><td>{{ann.description}}</td></tr>
+      </table>
+    </div>
+  </body>
+
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <script type="text/javascript" src="js/task-util.js"></script>
+</html>
