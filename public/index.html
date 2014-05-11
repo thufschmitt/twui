@@ -16,15 +16,21 @@
       $http.get('/tasks').success(function (data) {
         $scope.tasks = data
       });
+      $scope.refreshTasks = function() {
+        $http.get("/refresh")
+        setTimeout(function () {
+          $http.get('/tasks').success(function (data) { $scope.tasks = data; });
+        }, 1000)
+      }
     });
   </script>
 
 
-  <div class="left-pane">
+  <div class="left-pane" ng-controller="TaskCtrl">
     <div class="menu" id="menu">
-      <a id="refresh-button" class="refresh button">&#8635;</a>
+      <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
     </div>
-    <div class="task-list" id="task-list" ng-controller="TaskCtrl">
+    <div class="task-list" id="task-list">
       <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
         class="task group {{task.priority}}"
         id="{{task.priority}}">
