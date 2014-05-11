@@ -22,6 +22,9 @@
           $http.get('/tasks').success(function (data) { $scope.tasks = data; $scope.current = $scope.tasks[0] });
         }, 1000)
       }
+      $scope.setCurrent = function(t) {
+        $scope.current = t
+      }
     });
   </script>
 
@@ -32,6 +35,7 @@
       </div>
       <div class="task-list" id="task-list">
         <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
+          ng-click="setCurrent(task)"
           class="task group {{task.priority}}"
           id="{{task.priority}}">
           <div class="due">
