@@ -63,3 +63,10 @@ function taskUrgency(task) {
 
   return urgency
 }
+
+function stringToLink(s) {
+  if(/https?\:\/\//.test(s)) {
+    return '<a href="' + s + '">' + s + '</a>'
+  }
+  return s
+}

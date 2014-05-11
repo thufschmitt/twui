@@ -25,6 +25,13 @@
       $scope.setCurrent = function(t) {
         $scope.current = t
       }
+      $scope.prettyDate = function(d) {
+        var year  = d.slice(0,4)
+        var month = d.slice(4,6)
+        var day   = d.slice(6,8)
+        var date = new Date(Date.UTC(year, month, day))
+        return date.toLocaleDateString();
+      }
     });
   </script>
 
@@ -57,6 +64,17 @@
       <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
         <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
       </span>
+      <table class="task-properties">
+        <tr><td>Description</td><td>{{current.description}}</td></tr>
+        <tr ng-if="current.project"><td>Project</td><td>{{current.project}}</td></tr>
+        <tr><td>Status</td><td>{{current.status}}</td></tr>
+        <tr><td>Urgency</td><td>{{urgency(current)}}</td></tr>
+        <tr ng-if="current.priority"><td>Priority</td><td>{{current.priority}}</td></tr>
+        <tr><td>Added on</td><td>{{prettyDate(current.entry)}}</td></tr>
+        <tr ng-if="current.due"><td>Due on</td><td>{{prettyDate(current.due)}}</td></tr>
+        <tr><td>UUID</td><td>{{current.uuid}}</td></tr>
+        <tr ng-repeat="ann in current.annotations"><td></td><td>{{ann.description}}</td></tr>
+      </table>
     </div>
   </body>
 
