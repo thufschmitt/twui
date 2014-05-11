@@ -19,36 +19,42 @@
       $scope.refreshTasks = function() {
         $http.get("/refresh")
         setTimeout(function () {
-          $http.get('/tasks').success(function (data) { $scope.tasks = data; });
+          $http.get('/tasks').success(function (data) { $scope.tasks = data; $scope.current = $scope.tasks[0] });
         }, 1000)
       }
     });
   </script>
 
-
-  <div class="left-pane" ng-controller="TaskCtrl">
-    <div class="menu" id="menu">
-      <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
-    </div>
-    <div class="task-list" id="task-list">
-      <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
-        class="task group {{task.priority}}"
-        id="{{task.priority}}">
-        <div class="due">
-          <p ng-if="task.due">&lang;</p>
-        </div>
-        <div class="summary">
-          <span ng-if="task.project" class="project">{{task.project}}</span>
-          <span ng-if="task.description" class="description">{{task.description}}</span>
-          <span ng-if="task.tags && task.tags.length > 0" class="tag-list group">
-            <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
-          </span>
+  <body ng-controller="TaskCtrl">
+    <div class="left-pane">
+      <div class="menu" id="menu">
+        <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
+      </div>
+      <div class="task-list" id="task-list">
+        <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
+          class="task group {{task.priority}}"
+          id="{{task.priority}}">
+          <div class="due">
+            <p ng-if="task.due">&lang;</p>
+          </div>
+          <div class="summary">
+            <span ng-if="task.project" class="project">{{task.project}}</span>
+            <span ng-if="task.description" class="description">{{task.description}}</span>
+            <span ng-if="task.tags && task.tags.length > 0" class="tag-list group">
+              <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="task-detail" id="task-detail">
-  </div>
+    <div ng-if="current" class="task-detail" id="task-detail">
+      <h1>{{current.description}}</h1>
+      <p ng-if="current.project" class="project">{{current.project}}</p>
+      <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
+        <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
+      </span>
+    </div>
+  </body>
 
   <link rel="stylesheet" type="text/css" href="css/style.css" />
   <script type="text/javascript" src="js/task-util.js"></script>
