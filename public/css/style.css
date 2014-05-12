@@ -217,3 +217,32 @@ li {
 .error {
   border: 1px solid red;
 }
+
+#task-new form {
+  display: block;
+  padding: 0.5em;
+}
+
+#task-new form > * {
+  display: block;
+  margin:  0.5em auto;
+  font-size: 1em;
+  padding: 0.4em;
+  width: 50%;
+  border-radius: 0.1em;
+  border: 1px solid #999;
+}
+
+#task-new select {
+  border: none;
+  width: 52.4%;
+  border: 1px solid #999;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+#task-new .submit {
+  background: #ccc;
+  border: 1px solid #999;
+  border-radius: 0.1em;
+}
