@@ -22,17 +22,21 @@
           $http.get('/tasks').success(function (data) { $scope.tasks = data });
         }, 1000)
       }
-      $scope.setCurrent = function(t) {
-        $scope.current = t
+      $scope.toggleCurrent = function(t) {
+        if($scope.current === t) {
+          $scope.current = undefined
+        } else {
+          $scope.current = t
+        }
       }
       $scope.$watch("current", function() {
-        if($scope.current) {
-          var child = document.getElementById('task-list').firstElementChild
-          while(child) {
-            child.classList.remove('active')
-            child = child.nextElementSibling
-          }
+        var child = document.getElementById('task-list').firstElementChild
+        while(child) {
+          child.classList.remove('active')
+          child = child.nextElementSibling
+        }
 
+        if($scope.current) {
           document.getElementById($scope.current.uuid).classList.add('active')
         }
       }, true);
@@ -62,7 +66,7 @@
       </div>
       <div class="task-list" id="task-list">
         <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
-          ng-click="setCurrent(task)"
+          ng-click="toggleCurrent(task)"
           class="task group {{task.priority}}"
           id="{{task.uuid}}">
           <div class="due">
