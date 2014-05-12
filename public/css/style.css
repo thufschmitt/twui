@@ -145,23 +145,23 @@ body {
   background: #222
 }
 
-#task-detail {
+.task-detail {
   font-size: 2em;
 }
 
-#task-detail .tag-list {
+.task-detail .tag-list {
   text-align: center;
   margin: 0 auto;
   display: block;
 }
 
-#task-detail .tag {
+.task-detail .tag {
   font-size: 0.9em;
   font-weight: 100;
   display: inline-block;
 }
 
-#task-detail .project {
+.task-detail .project {
   font-size: 1.1em;
   width: 100%;
   display: block;
@@ -169,7 +169,7 @@ body {
   text-align: center;
 }
 
-#task-detail h1 {
+.task-detail h1 {
   font-weight: 100;
   font-size: 1.5em;
   text-align: center;
@@ -212,4 +212,8 @@ li {
   padding: .6em;
   border: 1px solid #999;
   border-radius: 0.1em;
+}
+
+.error {
+  border: 1px solid red;
 }

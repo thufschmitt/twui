@@ -56,6 +56,20 @@
           $scope.refreshTasks()
         })
       }
+      $scope.newtask = {}
+      $scope.addTask = function() {
+        if($scope.newtask.description) {
+          console.log($scope.newtask)
+          $scope.newtask = {}
+        } else {
+          document.getElementById('new-description').classList.add('error')
+        }
+      }
+      $scope.$watch('newtask.description', function() {
+        if($scope.newtask.description) {
+          document.getElementById('new-description').classList.remove('error')
+        }
+      })
     });
   </script>
 
@@ -102,6 +116,20 @@
         <tr><td>UUID</td><td>{{current.uuid}}</td></tr>
         <tr ng-repeat="ann in current.annotations"><td></td><td>{{ann.description}}</td></tr>
       </table>
+    </div>
+    <div ng-if="!current" class="task-detail" id="task-new">
+      <h1>New Task</h1>
+      <form ng-submit="addTask()">
+        <input ng-model="newtask.description" type="text" placeholder="Pick up milk" id="new-description"/>
+        <input ng-model="newtask.project" type="text" placeholder="Project" id="new-project" />
+        <select ng-model="newtask.priority" id="new-priority">
+          <option value="H">High priority</option>
+          <option value="M">Medium priority</option>
+          <option value="L">Low priority</option>
+          <option value="" selected="selected">No priority</option>
+        </select>
+        <input type="submit" value="add" />
+      </form>
     </div>
   </body>
 
