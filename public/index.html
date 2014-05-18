@@ -59,8 +59,18 @@
       $scope.newtask = {}
       $scope.addTask = function() {
         if($scope.newtask.description) {
-          console.log($scope.newtask)
-          $scope.newtask = {}
+          var submissionData = {
+            description: $scope.newtask.description,
+            project:     $scope.newtask.project,
+            priority:    $scope.newtask.priority
+          }
+          $http.put('/add',
+              JSON.stringify(submissionData),
+              { headers: {"Content-Type": "applicaiton/json; charset=UTF-8"}}
+          ).success( function() {
+            $scope.newtask = {}
+            $scope.refreshTasks()
+          })
         } else {
           document.getElementById('new-description').classList.add('error')
         }
