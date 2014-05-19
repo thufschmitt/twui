@@ -10,6 +10,7 @@
   },
   "main": "./",
   "scripts": {
+    "prepublish": "make deploy",
     "test": "make"
   },
   "engines": {
