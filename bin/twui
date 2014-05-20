@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
+process.chdir(__dirname);
+process.chdir('../');
 require('../twui.js');
