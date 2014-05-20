@@ -4,7 +4,7 @@
   "description": "Responsive web interface to Taskwarrior",
   "license": "MIT",
   "keywords": ["responsive", "web", "ui", "Taskwarrior"],
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "http://github.com/rampantmonkey/node-doublycircular.git"
