@@ -18,11 +18,18 @@ If you want twui to run as a background process use the following:
 
 ## Contributing
 
-Make sure that the test suite passes after your changes.
-You should also have tests that cover the new functionality or demonstrate the bug fix.
-The test suite is written on top of [mocha](https://github.com/visionmedia/mocha).
-To run the test suite just type `make`.
-This will download all of the dependencies (if not already installed) and run the tests.
+### Setting up the development environment
+
+0. Install node [http://nodejs.org/](http://nodejs.org/)
+1. Clone the repo `git clone https://github.com/rampantmonkey/twui.git`
+2. Move to directory `cd twui`
+3. Download dependencies (angular.js) `make deploy`
+4. Start server `bin/twui`
+
+### Updating to most recent version
+
+1. Download latest changes `git pull origin master`
+2. Start server `bin/twui`
 
 ## License
 _This software - &copy; Casey Robinson 2014 - is released under the MIT license._
