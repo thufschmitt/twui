@@ -27,5 +27,15 @@
   "preferGlobal": "true",
   "bin": {
     "twui": "bin/twui"
-  }
+  },
+  "files": [
+    "LICENSE.txt",
+    "Makefile",
+    "README.md",
+    "bin",
+    "lib",
+    "public",
+    "test",
+    "twui.js"
+  ]
 }
