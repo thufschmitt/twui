@@ -12,6 +12,7 @@ var serveStatic = require('./lib/static_serv')
 var PORT = 2718
 
 var taskList
+var projectList
 
 var router = new director.http.Router({
   '/tasks': {
@@ -64,9 +65,18 @@ function serveTasks() {
   this.res.end(JSON.stringify(taskList))
 }
 
+function inferProjectList(tasks) {
+  return tasks.map( function(t) { return t.project } )
+       .reduce( function(acc, p) {
+         if ( p && acc.indexOf(p) < 0 ) acc.push(p);
+         return acc;
+       }, [])
+}
+
 function reloadTasks() {
   when(taskFetcher.fetch(), function (tasks) {
     taskList = tasks
+    projectList = inferProjectList(tasks)
   }, function (err) {
     console.error(err)
   })
