@@ -62,6 +62,10 @@ body {
   font-weight: 800;
 }
 
+.annotated p{
+  font-size: 2em;
+}
+
 .left-pane {
   width: 33%;
   position: absolute;

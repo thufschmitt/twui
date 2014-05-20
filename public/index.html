@@ -158,6 +158,9 @@
               <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
             </span>
           </div>
+          <div class="annotated">
+            <p ng-if="task.annotations && task.annotations.length > 0">+</p>
+          </div>
         </div>
       </div>
     </div>
