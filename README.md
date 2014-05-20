@@ -4,6 +4,18 @@ Taskwarrior UI - a responsive web interface to [taskwarrior](http://taskwarrior.
 
 [![Build Status badge](http://img.shields.io/travis/rampantmonkey/twui.svg?style=flat)](https://travis-ci.org/rampantmonkey/twui) [![npm package version badge](http://img.shields.io/npm/v/twui.svg?style=flat)](https://www.npmjs.org/package/twui) [![license badge](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT)
 
+## Installing
+
+    npm install -g twui
+
+## Usage
+
+To start simply type `twui` and navigate to `localhost:2718`.
+
+If you want twui to run as a background process use the following:
+
+    twui &>/dev/null &
+
 ## Contributing
 
 Make sure that the test suite passes after your changes.
