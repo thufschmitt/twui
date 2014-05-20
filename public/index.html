@@ -79,7 +79,7 @@
           }
           $http.put('/add',
               JSON.stringify(submissionData),
-              { headers: {"Content-Type": "applicaiton/json; charset=UTF-8"}}
+              { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {
             $scope.newtask = {}
             $scope.refreshTasks()
