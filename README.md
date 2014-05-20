@@ -31,6 +31,17 @@ If you want twui to run as a background process use the following:
 1. Download latest changes `git pull origin master`
 2. Start server `bin/twui`
 
+### Common Issues
+
+#### No such file or directory
+
+    /usr/bin/env: node: No such file or directory
+
+This error occurs when the node executable is not in your `PATH`.
+Some linux distributions decided to install the node executable as `nodejs` instead of `node`.
+The simple solution is to create a symlink `ln -s /usr/bin/nodejs  /usr/bin/node`.
+But for those afraid of the file system a package is available to perform the same action - `apt-get install nodejs-legacy`.
+
 ## License
 _This software - &copy; Casey Robinson 2014 - is released under the MIT license._
 You can find a copy in [LICENSE.txt](LICENSE.txt) or at [opensource.org](http://opensource.org/licenses/MIT).
