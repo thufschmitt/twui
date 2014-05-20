@@ -27,12 +27,16 @@
         if($scope.current === t) {
           $scope.current = undefined
           $scope.modify = false
+          $scope.annotate = false
         } else {
           $scope.current = t
         }
       }
       $scope.toggleModify = function() {
         $scope.modify = !$scope.modify
+      }
+      $scope.toggleAnnotate = function() {
+        $scope.annotate = !$scope.annotate
       }
       $scope.$watch("current", function() {
         var child = document.getElementById('task-list').firstElementChild
@@ -91,6 +95,20 @@
           })
         } else {
           document.getElementById('new-description').classList.add('error')
+        }
+      }
+      $scope.newAnnotation = {}
+      $scope.annotateTask = function() {
+        console.log($scope.newAnnotation.description)
+        if($scope.newAnnotation.description) {
+          $http.put('/annotate',
+            JSON.stringify({"uuid": $scope.current.uuid, "annotation": $scope.newAnnotation.description}),
+            { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+          ).success( function() {
+            console.log('Annotation Successful')
+            $scope.newAnnotation = {}
+            $scope.refreshTasks()
+          })
         }
       }
       $scope.newtask = {}
@@ -153,7 +171,14 @@
         <li id="task-done" ng-click="finishTask(current)">&#10004;  [done]</li>
         <li id="task-delete" ng-click="deleteTask(current)">&#10008; [delete]</li>
         <li id="task-edit" ng-click="toggleModify()">&#x270e; [modify]</li>
+        <li id="task-annotate" ng-click="toggleAnnotate()">+ [anotate]</li>
       </ul>
+      <div ng-if="annotate" id="task-new">
+        <form ng-submit="annotateTask()">
+          <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
+          <input type="submit" class="submit" value="annotate" />
+        </form>
+      </div>
       <div ng-if="current && modify" id="task-new">
         <form ng-submit="modifyTask()">
           <input ng-model="current.description" type="text" placeholder="Pick up milk" id="new-description"/>
