@@ -246,3 +246,14 @@ li {
   border: 1px solid #999;
   border-radius: 0.1em;
 }
+
+@media (min-width: 960px) {
+  .task {
+    padding: 0.4em 0;
+    font-size: 1.1em;
+  }
+
+  .due {
+    font-size: 1.6em;
+  }
+}
