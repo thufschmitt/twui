@@ -26,9 +26,17 @@
       $scope.toggleCurrent = function(t) {
         if($scope.current === t) {
           $scope.current = undefined
+          $scope.modify = false
+          $scope.annotate = false
         } else {
           $scope.current = t
         }
+      }
+      $scope.toggleModify = function() {
+        $scope.modify = !$scope.modify
+      }
+      $scope.toggleAnnotate = function() {
+        $scope.annotate = !$scope.annotate
       }
       $scope.$watch("current", function() {
         var child = document.getElementById('task-list').firstElementChild
@@ -57,6 +65,52 @@
           $scope.refreshTasks()
         })
       }
+      $scope.deleteTask = function(task) {
+        $http.put('/delete',
+                     JSON.stringify({"uuid": task.uuid}),
+                     { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+        ).success( function() {
+          console.log("Delete Successful")
+          $scope.current = undefined
+          $scope.refreshTasks()
+        }).error( function(data, status) {
+          console.log("Delete Failed", data, status)
+        })
+      }
+      $scope.modifyTask = function() {
+        if($scope.current.description) {
+          var submissionData = {
+            uuid:        $scope.current.uuid,
+            description: $scope.current.description,
+            project:     $scope.current.project,
+            priority:    $scope.current.priority
+          }
+          $http.put('/modify',
+              JSON.stringify(submissionData),
+              { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+          ).success( function() {
+            console.log('SUCCESS!')
+            $scope.toggleModify()
+            $scope.refreshTasks()
+          })
+        } else {
+          document.getElementById('new-description').classList.add('error')
+        }
+      }
+      $scope.newAnnotation = {}
+      $scope.annotateTask = function() {
+        console.log($scope.newAnnotation.description)
+        if($scope.newAnnotation.description) {
+          $http.put('/annotate',
+            JSON.stringify({"uuid": $scope.current.uuid, "annotation": $scope.newAnnotation.description}),
+            { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+          ).success( function() {
+            console.log('Annotation Successful')
+            $scope.newAnnotation = {}
+            $scope.refreshTasks()
+          })
+        }
+      }
       $scope.newtask = {}
       $scope.addTask = function() {
         if($scope.newtask.description) {
@@ -67,7 +121,7 @@
           }
           $http.put('/add',
               JSON.stringify(submissionData),
-              { headers: {"Content-Type": "applicaiton/json; charset=UTF-8"}}
+              { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {
             $scope.newtask = {}
             $scope.refreshTasks()
@@ -115,7 +169,29 @@
       </span>
       <ul>
         <li id="task-done" ng-click="finishTask(current)">&#10004;  [done]</li>
+        <li id="task-delete" ng-click="deleteTask(current)">&#10008; [delete]</li>
+        <li id="task-edit" ng-click="toggleModify()">&#x270e; [modify]</li>
+        <li id="task-annotate" ng-click="toggleAnnotate()">+ [anotate]</li>
       </ul>
+      <div ng-if="annotate" id="task-new">
+        <form ng-submit="annotateTask()">
+          <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
+          <input type="submit" class="submit" value="annotate" />
+        </form>
+      </div>
+      <div ng-if="current && modify" id="task-new">
+        <form ng-submit="modifyTask()">
+          <input ng-model="current.description" type="text" placeholder="Pick up milk" id="new-description"/>
+          <input ng-model="current.project" type="text" placeholder="Project" id="new-project" />
+          <select ng-model="current.priority" id="new-priority">
+            <option value="H">High priority</option>
+            <option value="M">Medium priority</option>
+            <option value="L">Low priority</option>
+            <option value="" selected="selected">No priority</option>
+          </select>
+          <input type="submit" class="submit" value="modify" />
+        </form>
+      </div>
       <table class="task-properties">
         <tr><td>Description</td><td>{{current.description}}</td></tr>
         <tr ng-if="current.project"><td>Project</td><td>{{current.project}}</td></tr>

@@ -103,6 +103,96 @@ var app = http.createServer( function (req, res) {
     } else {
       badRequest(res)
     }
+  } else if (/^\/delete/.test(req.url)) {
+    if(req.method === 'PUT') {
+      data = ''
+      req.on('data', function(chunk) { data += chunk.toString() })
+      req.on('end', function() {
+        try {
+          var id = JSON.parse(data).uuid
+          when(taskModifier.delete(id),
+            function() {
+              res.writeHead(204, {'content-type': 'application/json'})
+              res.end()
+            },
+            function (err) {
+              switch(err) {
+                case 'internal':
+                  res.writeHead(500)
+                  break
+                case 'bad uuid':
+                  res.writeHead(400)
+                  break
+              }
+              res.writeHead({'content-type': 'text/plain'})
+              res.end()
+            }
+          )
+        } catch (e) {
+          badRequest(res)
+        }
+      })
+    } else {
+      badRequest()
+    }
+  } else if (/^\/modify/.test(req.url)) {
+    if(req.method === 'PUT') {
+      data = ''
+      req.on('data', function(chunk) { data += chunk.toString() })
+      req.on('end', function() {
+        try {
+          when(taskModifier.modify(JSON.parse(data)),
+            function() {
+              res.writeHead(204, {'content-type': 'application/json'})
+              res.end()
+            },
+            function (err) {
+              switch(err) {
+                case 'malformed data':
+                  res.writeHead(400)
+                  break
+              }
+              res.writeHead({'content-type': 'text/plain'})
+              res.end()
+            }
+          )
+        } catch (e) {
+          badRequest(res)
+        }
+      })
+    } else {
+      badRequest()
+    }
+  } else if (/^\/annotate/.test(req.url)) {
+    if(req.method === 'PUT') {
+      console.log('boobies')
+      data = ''
+      req.on('data', function(chunk) { data += chunk.toString() })
+      req.on('end', function() {
+        try {
+          var parsed = JSON.parse(data)
+          when(taskModifier.annotate(parsed.uuid, parsed.annotation),
+            function() {
+              res.writeHead(204, {'content-type': 'application/json'})
+              res.end()
+            },
+            function (err) {
+              switch(err) {
+                case 'malformed data':
+                  res.writeHead(400)
+                  break
+              }
+              res.writeHead({'content-type': 'text/plain'})
+              res.end()
+            }
+          )
+        } catch (e) {
+          badRequest(res)
+        }
+      })
+    } else {
+      badRequest()
+    }
   } else if (/^\/add/.test(req.url)) {
     if(req.method === 'PUT') {
       data = ''

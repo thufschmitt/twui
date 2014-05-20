@@ -212,6 +212,12 @@ li {
   padding: .6em;
   border: 1px solid #999;
   border-radius: 0.1em;
+  font-size: 0.8em;
+  vertical-align: middle;
+}
+
+#task-annotate {
+  padding: 0.7em 0.6em;
 }
 
 .error {
