@@ -24,7 +24,8 @@ If you want twui to run as a background process use the following:
 1. Clone the repo `git clone https://github.com/rampantmonkey/twui.git`
 2. Move to directory `cd twui`
 3. Download dependencies (angular.js) `make deploy`
-4. Start server `bin/twui`
+4. Download and install node module dependencies locally `npm install`
+5. Start server `bin/twui`
 
 ### Updating to most recent version
 
