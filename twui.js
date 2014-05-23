@@ -14,6 +14,9 @@ var PORT = 2718
 var taskList
 
 var router = new director.http.Router({
+  '/tasks': {
+    get: serveTasks
+  },
   '/.*': {
     get: serveStatic
   }
@@ -24,12 +27,12 @@ function badRequest(response) {
   response.end()
 }
 
-function serveTasks(res) {
-  res.writeHead(
+function serveTasks() {
+  this.res.writeHead(
     statuses.ok,
     {"content-type": "application/json"}
   );
-  res.end(JSON.stringify(taskList))
+  this.res.end(JSON.stringify(taskList))
 }
 
 function reloadTasks() {
@@ -48,9 +51,7 @@ function handleRefresh(res) {
 
 var app = http.createServer( function (req, res) {
   var data
-  if (/^\/tasks[\/.*]?/.test(req.url)) {
-    serveTasks(res)
-  } else if (/^\/done/.test(req.url)) {
+  if (/^\/done/.test(req.url)) {
     if(req.method === 'PUT') {
       data = ''
       req.on('data', function(chunk) { data += chunk.toString() })
