@@ -6,16 +6,17 @@ var fs = require('fs')
 var path = require('path')
 var mime = require('mime')
 var statuses = require('httpstatuses')
+var director = require('director')
 
 var PORT = 2718
 
 var taskList
 
-function send404(response) {
-  response.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
-  response.write('Error 404: resource not found.')
-  response.end()
-}
+var router = new director.http.Router({
+  '/.*': {
+    get: serveStatic
+  }
+})
 
 function badRequest(response) {
   response.writeHead(statuses.badRequest, {'Content-Type': 'text/plain'})
@@ -30,18 +31,32 @@ function sendFile(response, filePath, fileContents) {
   response.end(fileContents)
 }
 
-function serveStatic(response, absPath) {
+function serveStatic() {
+  var req = this.req
+  var res = this.res
+  var absPath
+  if (this.req.url === '/') {
+    absPath = 'public/index.html'
+  } else {
+    absPath = 'public' + this.req.url
+  }
+  absPath = './' + absPath
+
   fs.exists(absPath, function(exists) {
     if (exists) {
       fs.readFile(absPath, function(err, data) {
         if (err) {
-          send404(response)
+          res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
+          res.write('Error 404: resource not found.')
+          res.end()
         } else {
-          sendFile(response, absPath, data)
+          sendFile(res, absPath, data)
         }
       })
     } else {
-      send404(response)
+      res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
+      res.write('Error 404: resource not found.')
+      res.end()
     }
   })
 }
@@ -228,13 +243,13 @@ var app = http.createServer( function (req, res) {
   } else if ('/refresh' === req.url) {
     handleRefresh(res)
   } else {
-    var path
-    if (req.url === '/') {
-      path = 'public/index.html'
-    } else {
-      path = 'public' + req.url
-    }
-    serveStatic(res, './' + path)
+    router.dispatch(req, res, function(err) {
+      if(err) {
+        res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
+        res.write('Error 404: resource not found.')
+        res.end()
+      }
+    })
   }
 })
 
