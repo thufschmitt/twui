@@ -120,7 +120,7 @@
             project:     $scope.newtask.project,
             priority:    $scope.newtask.priority
           }
-          $http.put('/add',
+          $http.post('/add',
               JSON.stringify(submissionData),
               { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {

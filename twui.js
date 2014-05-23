@@ -44,6 +44,40 @@ function reloadTasks() {
   })
 }
 
+function createTask(req, res) {
+  if(req.method === 'POST') {
+    data = ''
+    req.on('data', function(chunk) { data += chunk.toString() })
+    req.on('end', function() {
+      try {
+        var taskdata = JSON.parse(data)
+        when(taskModifier.create(taskdata),
+          function (value) {
+            res.writeHead(statuses.created, {'content-type': 'applicaiton/json'})
+            res.end(JSON.stringify(value))
+          },
+          function (err) {
+            switch(err) {
+              case 'internal':
+                res.writeHead(statuses.internalServerError)
+                break
+              case 'malformed data':
+                res.writeHead(statuses.badRequest)
+                break
+            }
+            res.writeHead({'content-type': 'text/plain'})
+            res.end()
+          }
+        )
+      } catch (e) {
+        badRequest(res)
+      }
+    })
+  } else {
+    badRequest(res)
+  }
+}
+
 function handleRefresh(res) {
   reloadTasks()
   this.res.writeHead(statuses.accepted, {"content-type": "text/plain"})
@@ -174,37 +208,7 @@ var app = http.createServer( function (req, res) {
       badRequest()
     }
   } else if (/^\/add/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var taskdata = JSON.parse(data)
-          when(taskModifier.create(taskdata),
-            function (value) {
-              res.writeHead(statuses.created, {'content-type': 'applicaiton/json'})
-              res.end(JSON.stringify(value))
-            },
-            function (err) {
-              switch(err) {
-                case 'internal':
-                  res.writeHead(statuses.internalServerError)
-                  break
-                case 'malformed data':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest(res)
-    }
+    createTask(req, res)
   } else {
     router.dispatch(req, res, function(err) {
       if(err) {
