@@ -172,10 +172,10 @@
         <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
       </span>
       <ul>
-        <li id="task-done" ng-click="finishTask(current)">&#10004;  [done]</li>
-        <li id="task-delete" ng-click="deleteTask(current)">&#10008; [delete]</li>
-        <li id="task-edit" ng-click="toggleModify()">&#x270e; [modify]</li>
-        <li id="task-annotate" ng-click="toggleAnnotate()">+ [anotate]</li>
+        <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
+        <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
+        <li id="task-edit" ng-click="toggleModify()">&#x270e; modify</li>
+        <li id="task-annotate" ng-click="toggleAnnotate()">+ anotate</li>
       </ul>
       <div ng-if="annotate" id="task-new">
         <form ng-submit="annotateTask()">
