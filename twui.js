@@ -7,6 +7,7 @@ var path = require('path')
 var mime = require('mime')
 var statuses = require('httpstatuses')
 var director = require('director')
+var serveStatic = require('./lib/static_serv')
 
 var PORT = 2718
 
@@ -21,44 +22,6 @@ var router = new director.http.Router({
 function badRequest(response) {
   response.writeHead(statuses.badRequest, {'Content-Type': 'text/plain'})
   response.end()
-}
-
-function sendFile(response, filePath, fileContents) {
-  response.writeHead(
-    statuses.ok,
-    {"content-type": mime.lookup(path.basename(filePath))}
-  );
-  response.end(fileContents)
-}
-
-function serveStatic() {
-  var req = this.req
-  var res = this.res
-  var absPath
-  if (this.req.url === '/') {
-    absPath = 'public/index.html'
-  } else {
-    absPath = 'public' + this.req.url
-  }
-  absPath = './' + absPath
-
-  fs.exists(absPath, function(exists) {
-    if (exists) {
-      fs.readFile(absPath, function(err, data) {
-        if (err) {
-          res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
-          res.write('Error 404: resource not found.')
-          res.end()
-        } else {
-          sendFile(res, absPath, data)
-        }
-      })
-    } else {
-      res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
-      res.write('Error 404: resource not found.')
-      res.end()
-    }
-  })
 }
 
 function serveTasks(res) {
