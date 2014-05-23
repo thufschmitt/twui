@@ -18,7 +18,7 @@
         $scope.tasks = data
       });
       $scope.refreshTasks = function() {
-        $http.get("/refresh")
+        $http.put('/tasks')
         setTimeout(function () {
           $http.get('/tasks').success(function (data) { $scope.tasks = data });
         }, 1000)

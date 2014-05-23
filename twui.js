@@ -15,7 +15,8 @@ var taskList
 
 var router = new director.http.Router({
   '/tasks': {
-    get: serveTasks
+    get: serveTasks,
+    put: handleRefresh
   },
   '/.*': {
     get: serveStatic
@@ -45,8 +46,8 @@ function reloadTasks() {
 
 function handleRefresh(res) {
   reloadTasks()
-  res.writeHead(statuses.accepted, {"content-type": "text/plain"})
-  res.end()
+  this.res.writeHead(statuses.accepted, {"content-type": "text/plain"})
+  this.res.end()
 }
 
 var app = http.createServer( function (req, res) {
@@ -204,8 +205,6 @@ var app = http.createServer( function (req, res) {
     } else {
       badRequest(res)
     }
-  } else if ('/refresh' === req.url) {
-    handleRefresh(res)
   } else {
     router.dispatch(req, res, function(err) {
       if(err) {
