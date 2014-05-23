@@ -20,7 +20,7 @@ body {
   padding: 0.7em 0;
   min-height: 2.9em;
   color: #ccc;
-  font-size: 1.5em;
+  font-size: 1.7em;
 }
 
 .task div > span {
@@ -63,7 +63,7 @@ body {
 }
 
 .annotated p{
-  font-size: 2em;
+  font-size: 1.8em;
 }
 
 .left-pane {
