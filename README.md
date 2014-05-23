@@ -24,8 +24,8 @@ If you want twui to run as a background process use the following:
 The task summary contains six indicators for the following attributes of a task.
 
 - Description - the majority of text displayed ("explain the task warrior list status indicators")
-- Project - the first line of text displayed in thin caps above the description ("TWUI")
-- Tags - bottom row of text each prefixed with a 'tag' image ("documentation")
+- Project - the text displayed in thin caps below the description ("TWUI")
+- Tags - text prefixed with a 'tag' image ("documentation")
 - Due Date - if the task has a due date 'hands' will appear in the circle to the left of the description (like a clock)
 - Annotations - if the task has annotations a '+' will occur to the right of the description
 - Priority - indicated by color

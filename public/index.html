@@ -153,10 +153,12 @@
             <p ng-if="task.due">&lang;</p>
           </div>
           <div class="summary">
-            <span ng-if="task.project" class="project">{{task.project}}</span>
             <span ng-if="task.description" class="description">{{task.description}}</span>
-            <span ng-if="task.tags && task.tags.length > 0" class="tag-list group">
-              <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
+            <span>
+              <span ng-if="task.project" class="project">{{task.project}}</span>
+              <span ng-if="task.tags && task.tags.length > 0" class="tag-list group">
+                <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
+              </span>
             </span>
           </div>
           <div class="annotated">
