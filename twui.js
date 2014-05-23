@@ -5,25 +5,26 @@ var taskModifier = require('./lib/task_modifier');
 var fs = require('fs')
 var path = require('path')
 var mime = require('mime')
+var statuses = require('httpstatuses')
 
 var PORT = 2718
 
 var taskList
 
 function send404(response) {
-  response.writeHead(404, {'Content-Type': 'text/plain'})
+  response.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
   response.write('Error 404: resource not found.')
   response.end()
 }
 
 function badRequest(response) {
-  response.writeHead(400, {'Content-Type': 'text/plain'})
+  response.writeHead(statuses.badRequest, {'Content-Type': 'text/plain'})
   response.end()
 }
 
 function sendFile(response, filePath, fileContents) {
   response.writeHead(
-    200,
+    statuses.ok,
     {"content-type": mime.lookup(path.basename(filePath))}
   );
   response.end(fileContents)
@@ -47,7 +48,7 @@ function serveStatic(response, absPath) {
 
 function serveTasks(res) {
   res.writeHead(
-    200,
+    statuses.ok,
     {"content-type": "application/json"}
   );
   res.end(JSON.stringify(taskList))
@@ -63,7 +64,7 @@ function reloadTasks() {
 
 function handleRefresh(res) {
   reloadTasks()
-  res.writeHead(202, {"content-type": "text/plain"})
+  res.writeHead(statuses.accepted, {"content-type": "text/plain"})
   res.end()
 }
 
@@ -80,16 +81,16 @@ var app = http.createServer( function (req, res) {
           var id = JSON.parse(data).uuid
           when(taskModifier.done(id),
                function () {
-                 res.writeHead(204, {'content-type': 'application/json'})
+                 res.writeHead(statuses.noContent, {'content-type': 'application/json'})
                  res.end()
                },
                function (err) {
                  switch(err) {
                    case 'internal':
-                     res.writeHead(500)
+                     res.writeHead(statuses.internalServerError)
                      break
                    case 'bad uuid':
-                     res.writeHead(400)
+                     res.writeHead(statuses.badRequest)
                      break
                  }
                  res.writeHead({'content-type': 'text/plain'})
@@ -112,16 +113,16 @@ var app = http.createServer( function (req, res) {
           var id = JSON.parse(data).uuid
           when(taskModifier.delete(id),
             function() {
-              res.writeHead(204, {'content-type': 'application/json'})
+              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
               res.end()
             },
             function (err) {
               switch(err) {
                 case 'internal':
-                  res.writeHead(500)
+                  res.writeHead(statuses.internalServerError)
                   break
                 case 'bad uuid':
-                  res.writeHead(400)
+                  res.writeHead(statuses.badRequest)
                   break
               }
               res.writeHead({'content-type': 'text/plain'})
@@ -143,13 +144,13 @@ var app = http.createServer( function (req, res) {
         try {
           when(taskModifier.modify(JSON.parse(data)),
             function() {
-              res.writeHead(204, {'content-type': 'application/json'})
+              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
               res.end()
             },
             function (err) {
               switch(err) {
                 case 'malformed data':
-                  res.writeHead(400)
+                  res.writeHead(statuses.badRequest)
                   break
               }
               res.writeHead({'content-type': 'text/plain'})
@@ -165,7 +166,6 @@ var app = http.createServer( function (req, res) {
     }
   } else if (/^\/annotate/.test(req.url)) {
     if(req.method === 'PUT') {
-      console.log('boobies')
       data = ''
       req.on('data', function(chunk) { data += chunk.toString() })
       req.on('end', function() {
@@ -173,13 +173,13 @@ var app = http.createServer( function (req, res) {
           var parsed = JSON.parse(data)
           when(taskModifier.annotate(parsed.uuid, parsed.annotation),
             function() {
-              res.writeHead(204, {'content-type': 'application/json'})
+              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
               res.end()
             },
             function (err) {
               switch(err) {
                 case 'malformed data':
-                  res.writeHead(400)
+                  res.writeHead(statuses.badRequest)
                   break
               }
               res.writeHead({'content-type': 'text/plain'})
@@ -202,16 +202,16 @@ var app = http.createServer( function (req, res) {
           var taskdata = JSON.parse(data)
           when(taskModifier.create(taskdata),
             function (value) {
-              res.writeHead(201, {'content-type': 'applicaiton/json'})
+              res.writeHead(statuses.created, {'content-type': 'applicaiton/json'})
               res.end(JSON.stringify(value))
             },
             function (err) {
               switch(err) {
                 case 'internal':
-                  res.writeHead(500)
+                  res.writeHead(statuses.internalServerError)
                   break
                 case 'malformed data':
-                  res.writeHead(400)
+                  res.writeHead(statuses.badRequest)
                   break
               }
               res.writeHead({'content-type': 'text/plain'})
