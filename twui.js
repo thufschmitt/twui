@@ -15,6 +15,9 @@ var taskList
 var projectList
 
 var router = new director.http.Router({
+  '/projects': {
+    get: serveProjects,
+  },
   '/tasks': {
     get: serveTasks,
     post: createTask,
@@ -55,6 +58,14 @@ function serveTask(uuid) {
   } else {
     badRequest(this.res)
   }
+}
+
+function serveProjects() {
+  this.res.writeHead(
+    statuses.ok,
+    {"content-type": "application/json"}
+  )
+  this.res.end(JSON.stringify(projectList))
 }
 
 function serveTasks() {
