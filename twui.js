@@ -22,6 +22,9 @@ var router = new director.http.Router({
       get: serveTask,
       delete: deleteTask,
       post: completeTask,
+      '/annotate': {
+        post: annotateTask
+      }
     },
   },
   '/.*': {
@@ -134,6 +137,25 @@ function completeTask(uuid) {
   )
 }
 
+function annotateTask(uuid) {
+  var res = this.res
+  when(taskModifier.annotate(uuid, this.req.body.annotation),
+    function() {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function (err) {
+      switch(err) {
+        case 'malformed data':
+          res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
 function handleRefresh(res) {
   reloadTasks()
   this.res.writeHead(statuses.accepted, {"content-type": "text/plain"})
@@ -149,35 +171,6 @@ var app = http.createServer( function (req, res) {
       req.on('end', function() {
         try {
           when(taskModifier.modify(JSON.parse(data)),
-            function() {
-              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
-              res.end()
-            },
-            function (err) {
-              switch(err) {
-                case 'malformed data':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest()
-    }
-  } else if (/^\/annotate/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var parsed = JSON.parse(data)
-          when(taskModifier.annotate(parsed.uuid, parsed.annotation),
             function() {
               res.writeHead(statuses.noContent, {'content-type': 'application/json'})
               res.end()

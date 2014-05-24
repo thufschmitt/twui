@@ -99,8 +99,8 @@
       $scope.annotateTask = function() {
         console.log($scope.newAnnotation.description)
         if($scope.newAnnotation.description) {
-          $http.put('/annotate',
-            JSON.stringify({"uuid": $scope.current.uuid, "annotation": $scope.newAnnotation.description}),
+          $http.post('tasks/' + $scope.current.uuid + '/annotate',
+            JSON.stringify({"annotation": $scope.newAnnotation.description}),
             { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {
             console.log('Annotation Successful')
