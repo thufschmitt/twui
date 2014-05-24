@@ -17,10 +17,14 @@
       $http.get('/tasks').success(function (data) {
         $scope.tasks = data
       });
+      $http.get('/projects').success(function (data) {
+        $scope.projects = data
+      });
       $scope.refreshTasks = function() {
         $http.put('/tasks')
         setTimeout(function () {
           $http.get('/tasks').success(function (data) { $scope.tasks = data });
+          $http.get('/projects').success(function (data) { $scope.projects = data });
         }, 1000)
       }
       $scope.toggleCurrent = function(t) {
@@ -185,7 +189,7 @@
       <div ng-if="current && modify" id="task-new">
         <form ng-submit="modifyTask()">
           <input ng-model="current.description" type="text" placeholder="Pick up milk" id="new-description"/>
-          <input ng-model="current.project" type="text" placeholder="Project" id="new-project" />
+          <input ng-model="current.project" type="text" placeholder="Project" id="new-project" list="projectList" />
           <select ng-model="current.priority" id="new-priority">
             <option value="H">High priority</option>
             <option value="M">Medium priority</option>
@@ -211,7 +215,7 @@
       <h1>New Task</h1>
       <form ng-submit="addTask()">
         <input ng-model="newtask.description" type="text" placeholder="Pick up milk" id="new-description"/>
-        <input ng-model="newtask.project" type="text" placeholder="Project" id="new-project" />
+        <input ng-model="newtask.project" type="text" placeholder="Project" id="new-project" list="projectList" />
         <select ng-model="newtask.priority" id="new-priority">
           <option value="H">High priority</option>
           <option value="M">Medium priority</option>
@@ -221,6 +225,7 @@
         <input type="submit" class="submit" value="add" />
       </form>
     </div>
+    <datalist id="projectList"> <option data-ng-repeat="proj in projects" value="{{proj}}" /> </datalist>
   </body>
 
   <link rel="stylesheet" type="text/css" href="css/style.css" />
