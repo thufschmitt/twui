@@ -78,14 +78,13 @@
       $scope.modifyTask = function() {
         if($scope.current.description) {
           var submissionData = {
-            uuid:        $scope.current.uuid,
             description: $scope.current.description,
             project:     $scope.current.project,
             priority:    $scope.current.priority
           }
-          $http.put('/modify',
-              JSON.stringify(submissionData),
-              { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+          $http.put('/tasks/' + $scope.current.uuid,
+            JSON.stringify(submissionData),
+            { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {
             console.log('SUCCESS!')
             $scope.toggleModify()
