@@ -20,6 +20,7 @@ var router = new director.http.Router({
     put: handleRefresh,
     '/([A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/': {
       get: serveTask,
+      delete: deleteTask,
     },
   },
   '/.*': {
@@ -88,6 +89,28 @@ function createTask() {
   )
 }
 
+function deleteTask(uuid) {
+  var res = this.res
+  when(taskModifier.delete(uuid),
+    function() {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function (err) {
+      switch(err) {
+        case 'internal':
+          res.writeHead(statuses.internalServerError)
+          break
+        case 'bad uuid':
+          res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
 function handleRefresh(res) {
   reloadTasks()
   this.res.writeHead(statuses.accepted, {"content-type": "text/plain"})
@@ -127,38 +150,6 @@ var app = http.createServer( function (req, res) {
       })
     } else {
       badRequest(res)
-    }
-  } else if (/^\/delete/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var id = JSON.parse(data).uuid
-          when(taskModifier.delete(id),
-            function() {
-              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
-              res.end()
-            },
-            function (err) {
-              switch(err) {
-                case 'internal':
-                  res.writeHead(statuses.internalServerError)
-                  break
-                case 'bad uuid':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest()
     }
   } else if (/^\/modify/.test(req.url)) {
     if(req.method === 'PUT') {
