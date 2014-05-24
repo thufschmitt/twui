@@ -42,6 +42,10 @@
       $scope.toggleAnnotate = function() {
         $scope.annotate = !$scope.annotate
       }
+      $scope.toggleProjectSuggestion = function() {
+        if($scope.current.project =='') document.getElementById('project-suggest').style.visibility = 'hidden';
+        else document.getElementById('project-suggest').style.visibility = 'visible';
+      }
       $scope.$watch("current", function() {
         var child = document.getElementById('task-list').firstElementChild
         while(child) {
@@ -189,7 +193,10 @@
       <div ng-if="current && modify" id="task-new">
         <form ng-submit="modifyTask()">
           <input ng-model="current.description" type="text" placeholder="Pick up milk" id="new-description"/>
-          <input ng-model="current.project" type="text" placeholder="Project" id="new-project" />
+          <div id="project-suggest">
+            <span ng-repeat="proj in projects | filter:current.project">{{proj}}</span>
+          </div>
+          <input ng-model="current.project" type="text" placeholder="Project" id="new-project" ng-change="toggleProjectSuggestion()" />
           <select ng-model="current.priority" id="new-priority">
             <option value="H">High priority</option>
             <option value="M">Medium priority</option>
