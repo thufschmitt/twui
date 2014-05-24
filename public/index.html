@@ -17,10 +17,14 @@
       $http.get('/tasks').success(function (data) {
         $scope.tasks = data
       });
+      $http.get('/projects').success(function (data) {
+        $scope.projects = data
+      });
       $scope.refreshTasks = function() {
         $http.put('/tasks')
         setTimeout(function () {
           $http.get('/tasks').success(function (data) { $scope.tasks = data });
+          $http.get('/projects').success(function (data) { $scope.projects = data });
         }, 1000)
       }
       $scope.toggleCurrent = function(t) {
