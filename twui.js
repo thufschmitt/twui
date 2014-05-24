@@ -47,8 +47,8 @@ function serveTask(uuid) {
   }
   if(t) {
     this.res.writeHead(
-        statuses.ok,
-        {"content-type": "application/json"}
+      statuses.ok,
+      {"content-type": "application/json"}
     )
     this.res.end(JSON.stringify(t))
   } else {
