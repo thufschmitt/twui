@@ -6,52 +6,62 @@ var fs = require('fs')
 var path = require('path')
 var mime = require('mime')
 var statuses = require('httpstatuses')
+var director = require('director')
+var serveStatic = require('./lib/static_serv')
 
 var PORT = 2718
 
 var taskList
 
-function send404(response) {
-  response.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
-  response.write('Error 404: resource not found.')
-  response.end()
-}
+var router = new director.http.Router({
+  '/tasks': {
+    get: serveTasks,
+    post: createTask,
+    put: handleRefresh,
+    '/([A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/': {
+      get: serveTask,
+      delete: deleteTask,
+      post: completeTask,
+      put: modifyTask,
+      '/annotate': {
+        post: annotateTask
+      }
+    },
+  },
+  '/.*': {
+    get: serveStatic
+  }
+})
 
 function badRequest(response) {
   response.writeHead(statuses.badRequest, {'Content-Type': 'text/plain'})
   response.end()
 }
 
-function sendFile(response, filePath, fileContents) {
-  response.writeHead(
-    statuses.ok,
-    {"content-type": mime.lookup(path.basename(filePath))}
-  );
-  response.end(fileContents)
+function serveTask(uuid) {
+  var t = undefined
+  for(var i = 0; i < taskList.length; i++) {
+    if(taskList[i].uuid !== uuid) continue;
+    t = taskList[i]
+    break
+  }
+  if(t) {
+    this.res.writeHead(
+      statuses.ok,
+      {"content-type": "application/json"}
+    )
+    this.res.end(JSON.stringify(t))
+  } else {
+    badRequest(this.res)
+  }
 }
 
-function serveStatic(response, absPath) {
-  fs.exists(absPath, function(exists) {
-    if (exists) {
-      fs.readFile(absPath, function(err, data) {
-        if (err) {
-          send404(response)
-        } else {
-          sendFile(response, absPath, data)
-        }
-      })
-    } else {
-      send404(response)
-    }
-  })
-}
-
-function serveTasks(res) {
-  res.writeHead(
+function serveTasks() {
+  this.res.writeHead(
     statuses.ok,
     {"content-type": "application/json"}
   );
-  res.end(JSON.stringify(taskList))
+  this.res.end(JSON.stringify(taskList))
 }
 
 function reloadTasks() {
@@ -62,180 +72,131 @@ function reloadTasks() {
   })
 }
 
+function createTask() {
+  var res = this.res
+  when(taskModifier.create(this.req.body),
+    function (value) {
+      res.writeHead(statuses.created, {'content-type': 'applicaiton/json'})
+      res.end(JSON.stringify(value))
+    },
+    function (err) {
+      switch(err) {
+        case 'internal':
+          this.res.writeHead(statuses.internalServerError)
+          break
+        case 'malformed data':
+          this.res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
+function deleteTask(uuid) {
+  var res = this.res
+  when(taskModifier.delete(uuid),
+    function() {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function (err) {
+      switch(err) {
+        case 'internal':
+          res.writeHead(statuses.internalServerError)
+          break
+        case 'bad uuid':
+          res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
+function completeTask(uuid) {
+  var res = this.res
+  when(taskModifier.done(uuid),
+    function () {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function (err) {
+      switch(err) {
+        case 'internal':
+          res.writeHead(statuses.internalServerError)
+          break
+        case 'bad uuid':
+          res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
+function annotateTask(uuid) {
+  var res = this.res
+  when(taskModifier.annotate(uuid, this.req.body.annotation),
+    function() {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function (err) {
+      switch(err) {
+        case 'malformed data':
+          res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
+function modifyTask(uuid) {
+  var res = this.res
+  var data = this.req.body
+  data.uuid = uuid
+  when(taskModifier.modify(data),
+    function() {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function (err) {
+      switch(err) {
+        case 'malformed data':
+          res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
 function handleRefresh(res) {
   reloadTasks()
-  res.writeHead(statuses.accepted, {"content-type": "text/plain"})
-  res.end()
+  this.res.writeHead(statuses.accepted, {"content-type": "text/plain"})
+  this.res.end()
 }
 
 var app = http.createServer( function (req, res) {
-  var data
-  if (/^\/tasks[\/.*]?/.test(req.url)) {
-    serveTasks(res)
-  } else if (/^\/done/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var id = JSON.parse(data).uuid
-          when(taskModifier.done(id),
-               function () {
-                 res.writeHead(statuses.noContent, {'content-type': 'application/json'})
-                 res.end()
-               },
-               function (err) {
-                 switch(err) {
-                   case 'internal':
-                     res.writeHead(statuses.internalServerError)
-                     break
-                   case 'bad uuid':
-                     res.writeHead(statuses.badRequest)
-                     break
-                 }
-                 res.writeHead({'content-type': 'text/plain'})
-                 res.end()
-               }
-            )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest(res)
+  req.chunks = [];
+  req.on('data', function(chunk) {
+    req.chunks.push(chunk.toString());
+  })
+
+  router.dispatch(req, res, function(err) {
+    if(err) {
+      res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
+      res.write('Error 404: resource not found.')
+      res.end()
     }
-  } else if (/^\/delete/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var id = JSON.parse(data).uuid
-          when(taskModifier.delete(id),
-            function() {
-              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
-              res.end()
-            },
-            function (err) {
-              switch(err) {
-                case 'internal':
-                  res.writeHead(statuses.internalServerError)
-                  break
-                case 'bad uuid':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest()
-    }
-  } else if (/^\/modify/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          when(taskModifier.modify(JSON.parse(data)),
-            function() {
-              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
-              res.end()
-            },
-            function (err) {
-              switch(err) {
-                case 'malformed data':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest()
-    }
-  } else if (/^\/annotate/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var parsed = JSON.parse(data)
-          when(taskModifier.annotate(parsed.uuid, parsed.annotation),
-            function() {
-              res.writeHead(statuses.noContent, {'content-type': 'application/json'})
-              res.end()
-            },
-            function (err) {
-              switch(err) {
-                case 'malformed data':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest()
-    }
-  } else if (/^\/add/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var taskdata = JSON.parse(data)
-          when(taskModifier.create(taskdata),
-            function (value) {
-              res.writeHead(statuses.created, {'content-type': 'applicaiton/json'})
-              res.end(JSON.stringify(value))
-            },
-            function (err) {
-              switch(err) {
-                case 'internal':
-                  res.writeHead(statuses.internalServerError)
-                  break
-                case 'malformed data':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest(res)
-    }
-  } else if ('/refresh' === req.url) {
-    handleRefresh(res)
-  } else {
-    var path
-    if (req.url === '/') {
-      path = 'public/index.html'
-    } else {
-      path = 'public' + req.url
-    }
-    serveStatic(res, './' + path)
-  }
+  })
 })
 
 reloadTasks()

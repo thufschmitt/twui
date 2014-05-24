@@ -18,7 +18,7 @@
         $scope.tasks = data
       });
       $scope.refreshTasks = function() {
-        $http.get("/refresh")
+        $http.put('/tasks')
         setTimeout(function () {
           $http.get('/tasks').success(function (data) { $scope.tasks = data });
         }, 1000)
@@ -57,17 +57,15 @@
         return date.toLocaleDateString();
       }
       $scope.finishTask = function(task) {
-        $http.put('/done',
-                  JSON.stringify({"uuid": task.uuid}),
-                  { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+        $http.post('/tasks/' + task.uuid,
+               { headers: {"Content-Type": "application/json; charset=UTF-8"}}
         ).success( function() {
           $scope.current = undefined
           $scope.refreshTasks()
         })
       }
       $scope.deleteTask = function(task) {
-        $http.put('/delete',
-                     JSON.stringify({"uuid": task.uuid}),
+        $http.delete('/tasks/' + task.uuid,
                      { headers: {"Content-Type": "application/json; charset=UTF-8"}}
         ).success( function() {
           console.log("Delete Successful")
@@ -80,14 +78,13 @@
       $scope.modifyTask = function() {
         if($scope.current.description) {
           var submissionData = {
-            uuid:        $scope.current.uuid,
             description: $scope.current.description,
             project:     $scope.current.project,
             priority:    $scope.current.priority
           }
-          $http.put('/modify',
-              JSON.stringify(submissionData),
-              { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+          $http.put('/tasks/' + $scope.current.uuid,
+            JSON.stringify(submissionData),
+            { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {
             console.log('SUCCESS!')
             $scope.toggleModify()
@@ -101,8 +98,8 @@
       $scope.annotateTask = function() {
         console.log($scope.newAnnotation.description)
         if($scope.newAnnotation.description) {
-          $http.put('/annotate',
-            JSON.stringify({"uuid": $scope.current.uuid, "annotation": $scope.newAnnotation.description}),
+          $http.post('tasks/' + $scope.current.uuid + '/annotate',
+            JSON.stringify({"annotation": $scope.newAnnotation.description}),
             { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {
             console.log('Annotation Successful')
@@ -120,7 +117,7 @@
             project:     $scope.newtask.project,
             priority:    $scope.newtask.priority
           }
-          $http.put('/add',
+          $http.post('/tasks',
               JSON.stringify(submissionData),
               { headers: {"Content-Type": "application/json; charset=UTF-8"}}
           ).success( function() {
