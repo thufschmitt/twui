@@ -210,6 +210,11 @@ var app = http.createServer( function (req, res) {
   } else if (/^\/add/.test(req.url)) {
     createTask(req, res)
   } else {
+    req.chunks = [];
+    req.on('data', function(chunk) {
+      req.chunks.push(chunk.toString());
+    })
+
     router.dispatch(req, res, function(err) {
       if(err) {
         res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
