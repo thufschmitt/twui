@@ -7,7 +7,7 @@
   "version": "0.0.4",
   "repository": {
     "type": "git",
-    "url": "http://github.com/rampantmonkey/node-doublycircular.git"
+    "url": "http://github.com/rampantmonkey/twui.git"
   },
   "main": "./",
   "scripts": {
