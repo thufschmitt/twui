@@ -57,9 +57,8 @@
         return date.toLocaleDateString();
       }
       $scope.finishTask = function(task) {
-        $http.put('/done',
-                  JSON.stringify({"uuid": task.uuid}),
-                  { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+        $http.post('/tasks/' + task.uuid,
+               { headers: {"Content-Type": "application/json; charset=UTF-8"}}
         ).success( function() {
           $scope.current = undefined
           $scope.refreshTasks()

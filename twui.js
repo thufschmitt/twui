@@ -21,6 +21,7 @@ var router = new director.http.Router({
     '/([A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/': {
       get: serveTask,
       delete: deleteTask,
+      post: completeTask,
     },
   },
   '/.*': {
@@ -111,6 +112,28 @@ function deleteTask(uuid) {
   )
 }
 
+function completeTask(uuid) {
+  var res = this.res
+  when(taskModifier.done(uuid),
+    function () {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function (err) {
+      switch(err) {
+        case 'internal':
+          res.writeHead(statuses.internalServerError)
+          break
+        case 'bad uuid':
+          res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
 function handleRefresh(res) {
   reloadTasks()
   this.res.writeHead(statuses.accepted, {"content-type": "text/plain"})
@@ -119,39 +142,7 @@ function handleRefresh(res) {
 
 var app = http.createServer( function (req, res) {
   var data
-  if (/^\/done/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var id = JSON.parse(data).uuid
-          when(taskModifier.done(id),
-               function () {
-                 res.writeHead(statuses.noContent, {'content-type': 'application/json'})
-                 res.end()
-               },
-               function (err) {
-                 switch(err) {
-                   case 'internal':
-                     res.writeHead(statuses.internalServerError)
-                     break
-                   case 'bad uuid':
-                     res.writeHead(statuses.badRequest)
-                     break
-                 }
-                 res.writeHead({'content-type': 'text/plain'})
-                 res.end()
-               }
-            )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest(res)
-    }
-  } else if (/^\/modify/.test(req.url)) {
+  if (/^\/modify/.test(req.url)) {
     if(req.method === 'PUT') {
       data = ''
       req.on('data', function(chunk) { data += chunk.toString() })
