@@ -17,7 +17,10 @@ var router = new director.http.Router({
   '/tasks': {
     get: serveTasks,
     post: createTask,
-    put: handleRefresh
+    put: handleRefresh,
+    '/([A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/': {
+      get: serveTask,
+    },
   },
   '/.*': {
     get: serveStatic
@@ -27,6 +30,24 @@ var router = new director.http.Router({
 function badRequest(response) {
   response.writeHead(statuses.badRequest, {'Content-Type': 'text/plain'})
   response.end()
+}
+
+function serveTask(uuid) {
+  var t = undefined
+  for(var i = 0; i < taskList.length; i++) {
+    if(taskList[i].uuid !== uuid) continue;
+    t = taskList[i]
+    break
+  }
+  if(t) {
+    this.res.writeHead(
+        statuses.ok,
+        {"content-type": "application/json"}
+    )
+    this.res.end(JSON.stringify(t))
+  } else {
+    badRequest(this.res)
+  }
 }
 
 function serveTasks() {
