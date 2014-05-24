@@ -204,7 +204,7 @@
         <tr><td>Added on</td><td>{{prettyDate(current.entry)}}</td></tr>
         <tr ng-if="current.due"><td>Due on</td><td>{{prettyDate(current.due)}}</td></tr>
         <tr><td>UUID</td><td>{{current.uuid}}</td></tr>
-        <tr ng-repeat="ann in current.annotations"><td></td><td>{{ann.description}}</td></tr>
+        <tr ng-repeat="ann in current.annotations"><td>{{prettyDate(ann.entry)}}</td><td>{{ann.description}}</td></tr>
       </table>
     </div>
     <div ng-if="!current" class="task-detail" id="task-new">
