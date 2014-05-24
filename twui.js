@@ -16,10 +16,8 @@ var taskList
 var router = new director.http.Router({
   '/tasks': {
     get: serveTasks,
+    post: createTask,
     put: handleRefresh
-  },
-  '/add': {
-    post: createTask
   },
   '/.*': {
     get: serveStatic
