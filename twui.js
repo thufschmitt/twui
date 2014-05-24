@@ -16,6 +16,7 @@ var taskList
 var router = new director.http.Router({
   '/tasks': {
     get: serveTasks,
+    post: createTask,
     put: handleRefresh
   },
   '/.*': {
@@ -42,6 +43,28 @@ function reloadTasks() {
   }, function (err) {
     console.error(err)
   })
+}
+
+function createTask() {
+  var res = this.res
+  when(taskModifier.create(this.req.body),
+    function (value) {
+      res.writeHead(statuses.created, {'content-type': 'applicaiton/json'})
+      res.end(JSON.stringify(value))
+    },
+    function (err) {
+      switch(err) {
+        case 'internal':
+          this.res.writeHead(statuses.internalServerError)
+          break
+        case 'malformed data':
+          this.res.writeHead(statuses.badRequest)
+          break
+      }
+      res.writeHead({'content-type': 'text/plain'})
+      res.end()
+    }
+  )
 }
 
 function handleRefresh(res) {
@@ -173,39 +196,12 @@ var app = http.createServer( function (req, res) {
     } else {
       badRequest()
     }
-  } else if (/^\/add/.test(req.url)) {
-    if(req.method === 'PUT') {
-      data = ''
-      req.on('data', function(chunk) { data += chunk.toString() })
-      req.on('end', function() {
-        try {
-          var taskdata = JSON.parse(data)
-          when(taskModifier.create(taskdata),
-            function (value) {
-              res.writeHead(statuses.created, {'content-type': 'applicaiton/json'})
-              res.end(JSON.stringify(value))
-            },
-            function (err) {
-              switch(err) {
-                case 'internal':
-                  res.writeHead(statuses.internalServerError)
-                  break
-                case 'malformed data':
-                  res.writeHead(statuses.badRequest)
-                  break
-              }
-              res.writeHead({'content-type': 'text/plain'})
-              res.end()
-            }
-          )
-        } catch (e) {
-          badRequest(res)
-        }
-      })
-    } else {
-      badRequest(res)
-    }
   } else {
+    req.chunks = [];
+    req.on('data', function(chunk) {
+      req.chunks.push(chunk.toString());
+    })
+
     router.dispatch(req, res, function(err) {
       if(err) {
         res.writeHead(statuses.notFound, {'Content-Type': 'text/plain'})
