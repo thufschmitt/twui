@@ -37,7 +37,7 @@ body {
 }
 
 .summary {
-  width: 70%;
+  width: 80%;
   margin-left: 1em;
 }
 
@@ -64,7 +64,7 @@ body {
 }
 
 .annotated p{
-  font-size: 1.8em;
+  font-size: 0.9em;
   margin: 0;
   padding: 0;
 }
