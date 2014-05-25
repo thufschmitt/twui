@@ -118,6 +118,11 @@ body {
   padding: 0.5em;
 }
 
+.credit {
+  float: right;
+  margin: 0.5em;
+}
+
 .H * {
   color: red;
   border-color: red;
