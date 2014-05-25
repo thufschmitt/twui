@@ -32,6 +32,9 @@ var router = new director.http.Router({
       }
     },
   },
+  '/undo': {
+    post: undo,
+  },
   '/.*': {
     get: serveStatic
   }
@@ -114,6 +117,21 @@ function createTask() {
     }
   )
 }
+
+function undo() {
+  var res = this.res
+  when(taskModifier.undo(),
+    function() {
+      res.writeHead(statuses.noContent, {'content-type': 'application/json'})
+      res.end()
+    },
+    function() {
+      res.writeHead(statuses.badRequest, {'content-type': 'text/plain'})
+      res.end()
+    }
+  )
+}
+
 
 function deleteTask(uuid) {
   var res = this.res

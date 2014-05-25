@@ -129,4 +129,13 @@ taskApp.controller('TaskCtrl', function($scope, $http){
       document.getElementById('new-description').classList.remove('error')
     }
   })
+  $scope.undo = function() {
+    $http.post('/undo',
+        { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+    ).success( function() {
+      $scope.refreshTasks()
+      $scope.current = undefined
+      $scope.newtask = {}
+    })
+  }
 });
