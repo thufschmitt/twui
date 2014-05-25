@@ -102,25 +102,20 @@ body {
 .header {
   top: 0;
   height: 3em;
+  margin: 0;
 }
 
-.menu {
-  width: 100%;
-  background: #444;
+.header > a {
+  margin: 0;
   display: inline-block;
+  color: #aaa;
+  font-size: 2em;
+  padding: 0.15em 0.5em;
 }
 
 .button {
   text-align: center;
   padding: 0.5em;
-}
-
-.refresh {
-  font-size: 3em;
-  color: #ccc;
-  background: #228b22;
-  padding: 0.1em 0.35em;
-  display: block;
 }
 
 .H * {

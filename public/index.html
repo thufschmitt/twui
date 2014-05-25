@@ -141,13 +141,10 @@
   </script>
 
   <body ng-controller="TaskCtrl">
-    <div class="row header">
-      <p>header goes here</p>
-    </div>
+    <nav class="row header">
+      <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
+    </nav>
     <div class="col list-view scroll-y">
-      <div class="menu" id="menu">
-        <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
-      </div>
       <div class="task-list" id="task-list">
         <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
           ng-click="toggleCurrent(task)"
