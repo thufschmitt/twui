@@ -5,9 +5,10 @@
   <title>twui</title>
 
   <script type="text/javascript" src="js/angular.min.js"></script>
+  <script type="text/javascript" src="js/angular-route.min.js"></script>
   <script type="text/javascript" src="js/taskapp.js"></script>
 
-  <body ng-controller="TaskCtrl">
+  <body ng-controller="MainCtrl">
     <nav class="row header">
       <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">
         <img src="images/refresh.svg" alt="refresh button" />
@@ -20,91 +21,11 @@
       </a>
       <span class="credit">A <a href="http://rampantmonkey.com">rampantmonkey</a> creation</span>
     </nav>
-    <div class="col list-view scroll-y">
-      <div class="task-list" id="task-list">
-        <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
-          ng-click="toggleCurrent(task)"
-          class="task group {{task.priority}}"
-          id="{{task.uuid}}">
-          <div class="due">
-            <p ng-if="task.due">&lang;</p>
-          </div>
-          <div class="recur" ng-if="task.recur"></div>
-          <div class="summary">
-            <span ng-if="task.description" class="description">{{task.description}}</span>
-            <span>
-              <span ng-if="task.project" class="project">{{task.project}}</span>
-              <span ng-if="task.tags && task.tags.length > 0" class="tag-list group">
-                <span ng-repeat="tag in task.tags" class="tag">{{tag}}</span>
-              </span>
-            </span>
-          </div>
-          <div class="annotated">
-            <p ng-if="task.annotations && task.annotations.length > 0">[{{task.annotations.length}}]</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div ng-if="current" class="col task-detail scroll-y" id="task-detail">
-      <h1>{{current.description}}</h1>
-      <p ng-if="current.project" class="project">{{current.project}}</p>
-      <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
-        <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
-      </span>
-      <ul>
-        <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
-        <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
-        <li id="task-edit" ng-click="toggleModify()">&#x270e; modify</li>
-        <li id="task-annotate" ng-click="toggleAnnotate()">+ anotate</li>
-      </ul>
-      <div ng-if="annotate" id="task-new">
-        <form ng-submit="annotateTask()">
-          <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
-          <input type="submit" class="submit" value="annotate" />
-        </form>
-      </div>
-      <div ng-if="current && modify" id="task-new">
-        <form ng-submit="modifyTask()">
-          <input ng-model="current.description" type="text" placeholder="Pick up milk" id="new-description"/>
-          <input ng-model="current.project" type="text" placeholder="Project" id="new-project" list="projectList" />
-          <select ng-model="current.priority" id="new-priority">
-            <option value="H">High priority</option>
-            <option value="M">Medium priority</option>
-            <option value="L">Low priority</option>
-            <option value="" selected="selected">No priority</option>
-          </select>
-          <input type="submit" class="submit" value="modify" />
-        </form>
-      </div>
-      <table class="task-properties">
-        <tr><td>Description</td><td>{{current.description}}</td></tr>
-        <tr ng-if="current.project"><td>Project</td><td>{{current.project}}</td></tr>
-        <tr><td>Status</td><td>{{current.status}}</td></tr>
-        <tr><td>Urgency</td><td>{{urgency(current)}}</td></tr>
-        <tr ng-if="current.priority"><td>Priority</td><td>{{current.priority}}</td></tr>
-        <tr><td>Added on</td><td>{{prettyDate(current.entry)}}</td></tr>
-        <tr ng-if="current.due"><td>Due on</td><td>{{prettyDate(current.due)}}</td></tr>
-        <tr><td>UUID</td><td>{{current.uuid}}</td></tr>
-        <tr ng-repeat="ann in current.annotations"><td>{{prettyDate(ann.entry)}}</td><td>{{ann.description}}</td></tr>
-      </table>
-    </div>
-    <div ng-if="!current" class="col task-detail scroll-y" id="task-new">
-      <h1>New Task</h1>
-      <form ng-submit="addTask()">
-        <input ng-model="newtask.description" type="text" placeholder="Pick up milk" id="new-description"/>
-        <input ng-model="newtask.project" type="text" placeholder="Project" id="new-project" list="projectList" />
-        <select ng-model="newtask.priority" id="new-priority">
-          <option value="H">High priority</option>
-          <option value="M">Medium priority</option>
-          <option value="L">Low priority</option>
-          <option value="" selected="selected">No priority</option>
-        </select>
-        <input type="submit" class="submit" value="add" />
-      </form>
+    <div class="" id="content">
+      <div ng-view></div>
     </div>
     <datalist id="projectList"> <option data-ng-repeat="proj in projects" value="{{proj}}" /> </datalist>
   </body>
-
   <link rel="stylesheet" type="text/css" href="css/style.css" />
   <script type="text/javascript" src="js/task-util.js"></script>
 </html>

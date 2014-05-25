@@ -1,4 +1,16 @@
-var taskApp = angular.module('taskApp', [])
+var taskApp = angular.module('taskApp', ['ngRoute'])
+                     .config(function($routeProvider) {
+                       $routeProvider
+                        .when('/list', {
+                          templateUrl: 'partials/list.html',
+                          controller: 'TaskCtrl',
+                        })
+                        .otherwise({redirectTo: '/list'})
+                     })
+
+function MainCtrl($scope) {
+}
+
 taskApp.controller('TaskCtrl', function($scope, $http){
   $scope.urgency = function(task) {
     return taskUrgency(task);

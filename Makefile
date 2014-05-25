@@ -8,7 +8,7 @@ test: node_modules
 node_modules:
 	npm install
 
-deploy: public/js/jquery-$(JQUERY_VERSION).js public/js/angular.min.js
+deploy: public/js/jquery-$(JQUERY_VERSION).js public/js/angular.min.js public/js/angular-route.min.js
 
 public/js/jquery-$(JQUERY_VERSION).js:
 	@mkdir -p public/js
@@ -17,5 +17,9 @@ public/js/jquery-$(JQUERY_VERSION).js:
 public/js/angular.min.js:
 	@mkdir -p public/js
 	curl http://cdnjs.cloudflare.com/ajax/libs/angular.js/$(ANGULAR_VERSION)/angular.min.js > $@
+
+public/js/angular-route.min.js:
+	@mkdir -p public/js
+	curl http://cdnjs.cloudflare.com/ajax/libs/angular.js/$(ANGULAR_VERSION)/angular-route.min.js > $@
 
 .PHONY: test deploy
