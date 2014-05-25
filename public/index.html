@@ -141,7 +141,10 @@
   </script>
 
   <body ng-controller="TaskCtrl">
-    <div class="left-pane">
+    <div class="row header">
+      <p>header goes here</p>
+    </div>
+    <div class="col list-view scroll-y">
       <div class="menu" id="menu">
         <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
       </div>
@@ -168,7 +171,7 @@
         </div>
       </div>
     </div>
-    <div ng-if="current" class="task-detail" id="task-detail">
+    <div ng-if="current" class="col task-detail scroll-y" id="task-detail">
       <h1>{{current.description}}</h1>
       <p ng-if="current.project" class="project">{{current.project}}</p>
       <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
@@ -211,7 +214,7 @@
         <tr ng-repeat="ann in current.annotations"><td>{{prettyDate(ann.entry)}}</td><td>{{ann.description}}</td></tr>
       </table>
     </div>
-    <div ng-if="!current" class="task-detail" id="task-new">
+    <div ng-if="!current" class="col task-detail scroll-y" id="task-new">
       <h1>New Task</h1>
       <form ng-submit="addTask()">
         <input ng-model="newtask.description" type="text" placeholder="Pick up milk" id="new-description"/>

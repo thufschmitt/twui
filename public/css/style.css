@@ -4,6 +4,7 @@
 
 body {
   overflow: hidden;
+  margin: 0;
 }
 
 .group:after {
@@ -68,13 +69,39 @@ body {
   padding: 0;
 }
 
-.left-pane {
-  width: 33%;
+.row, .col {
+  overflow: hidden;
   position: absolute;
-  top: 0;
+}
+
+.row {
   left: 0;
-  overflow: auto;
-  height: 100vh;
+  right: 0;
+}
+
+.col {
+  top: 0;
+  bottom: 0;
+}
+
+.scroll-x {
+  overflow-x: auto;
+}
+
+.scroll-y {
+  overflow-y: auto;
+}
+
+.list-view {
+  width: 35em;
+  top: 3em;
+  bottom: 0em;
+  background: #333;
+}
+
+.header {
+  top: 0;
+  height: 3em;
 }
 
 .menu {
@@ -94,16 +121,6 @@ body {
   background: #228b22;
   padding: 0.1em 0.35em;
   display: block;
-}
-
-.task-detail {
-  width: 67%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  overflow-x: none;
-  overflow-y: scroll;
 }
 
 .H * {
@@ -153,6 +170,9 @@ body {
 
 .task-detail {
   font-size: 2em;
+  left: 17.5em;
+  right: 0;
+  top: 1.5em;
 }
 
 .task-detail .tag-list {
