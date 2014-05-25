@@ -9,7 +9,9 @@
 
   <body ng-controller="TaskCtrl">
     <nav class="row header">
-      <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">&#8635;</a>
+      <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">
+        <img src="images/refresh.svg" alt="refresh button" />
+      </a>
       <a id="undo-button" class="undo button" ng-click="undo()">
         <img src="images/undo.svg" alt="undo button" />
       </a>
