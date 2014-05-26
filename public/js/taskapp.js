@@ -32,7 +32,7 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
 function MainCtrl($scope) {
 }
 
-taskApp.controller('TaskCtrl', ['$scope', '$http', 'stateService', function($scope, $http, stateService){
+function TaskCtrl($scope, $http, stateService){
   $scope.urgency = function(task) {
     return taskUrgency(task);
   }
@@ -172,4 +172,4 @@ taskApp.controller('TaskCtrl', ['$scope', '$http', 'stateService', function($sco
       $scope.newtask = {}
     })
   }
-}]);
+}
