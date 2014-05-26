@@ -27,7 +27,22 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
                        return state
                      })
 
-function MainCtrl($scope) {
+function MainCtrl($scope, $http, stateService) {
+  $scope.state = stateService
+
+  $scope.undo = function() {
+    $http.post('/undo',
+        { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+    ).success( function() {
+      $scope.state.refresh()
+      $scope.current = undefined
+      $scope.newtask = {}
+    })
+  }
+
+  $scope.refreshTasks = function() {
+    $scope.state.refresh()
+  }
 }
 
 function ListCtrl($scope, $http, stateService){
@@ -40,20 +55,6 @@ function ListCtrl($scope, $http, stateService){
   }
   $scope.taskNotDone = function(task) {
     return taskNotDone(task)
-  }
-  stateService.refresh
-//  $http.get('/tasks').success(function (data) {
-//    $scope.tasks = data
-//  });
-//  $http.get('/projects').success(function (data) {
-//    $scope.projects = data
-//  });
-  $scope.refreshTasks = function() {
-    $http.put('/tasks')
-    setTimeout(function () {
-      $http.get('/tasks').success(function (data) { $scope.tasks = data });
-      $http.get('/projects').success(function (data) { $scope.projects = data });
-    }, 1000)
   }
   $scope.toggleCurrent = function(t) {
     if($scope.current === t) {
@@ -165,13 +166,4 @@ function ListCtrl($scope, $http, stateService){
       document.getElementById('new-description').classList.remove('error')
     }
   })
-  $scope.undo = function() {
-    $http.post('/undo',
-        { headers: {"Content-Type": "application/json; charset=UTF-8"}}
-    ).success( function() {
-      $scope.refreshTasks()
-      $scope.current = undefined
-      $scope.newtask = {}
-    })
-  }
 }
