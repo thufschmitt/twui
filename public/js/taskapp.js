@@ -1,32 +1,69 @@
-var taskApp = angular.module('taskApp', [])
-taskApp.controller('TaskCtrl', function($scope, $http){
+var taskApp = angular.module('taskApp', ['ngRoute'])
+                     .config(function($routeProvider) {
+                       $routeProvider
+                        .when('/list', {
+                          templateUrl: 'partials/list.html',
+                          controller: 'ListCtrl',
+                        })
+                        .otherwise({redirectTo: '/list'})
+                     })
+                     .factory('stateService', function($http) {
+                       var state = {}
+                       state.tasks = []
+                       state.projects = []
+
+                       state.refresh = function() {
+                         console.log('refreshing tasks')
+                         $http.put('/tasks')
+                         setTimeout(function () {
+                           $http.get('/tasks').success(   function (data) { state.tasks = data });
+                           $http.get('/projects').success(function (data) { state.projects = data });
+                         }, 1000)
+                       }
+
+                       $http.get('/tasks').success(   function (data) { state.tasks = data });
+                       $http.get('/projects').success(function (data) { state.projects = data });
+
+                       return state
+                     })
+
+function MainCtrl($scope, $http, stateService) {
+  $scope.state = stateService
+
+  $scope.undo = function() {
+    $http.post('/undo',
+        { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+    ).success( function() {
+      $scope.state.refresh()
+      $scope.current = undefined
+      $scope.newtask = {}
+    })
+  }
+
+  $scope.refreshTasks = function() {
+    $scope.state.refresh()
+  }
+}
+
+function ListCtrl($scope, $http, stateService){
+  $scope.state = stateService
+  $scope.$watch("state.tasks", function(){
+    console.log($scope.state.tasks.length)
+  }, true)
   $scope.urgency = function(task) {
     return taskUrgency(task);
   }
   $scope.taskNotDone = function(task) {
     return taskNotDone(task)
   }
-  $http.get('/tasks').success(function (data) {
-    $scope.tasks = data
-  });
-  $http.get('/projects').success(function (data) {
-    $scope.projects = data
-  });
-  $scope.refreshTasks = function() {
-    $http.put('/tasks')
-    setTimeout(function () {
-      $http.get('/tasks').success(function (data) { $scope.tasks = data });
-      $http.get('/projects').success(function (data) { $scope.projects = data });
-    }, 1000)
-  }
   $scope.toggleCurrent = function(t) {
     if($scope.current === t) {
       $scope.current = undefined
-      $scope.modify = false
-      $scope.annotate = false
     } else {
       $scope.current = t
     }
+    $scope.modify = false
+    $scope.annotate = false
   }
   $scope.toggleModify = function() {
     $scope.modify = !$scope.modify
@@ -129,13 +166,4 @@ taskApp.controller('TaskCtrl', function($scope, $http){
       document.getElementById('new-description').classList.remove('error')
     }
   })
-  $scope.undo = function() {
-    $http.post('/undo',
-        { headers: {"Content-Type": "application/json; charset=UTF-8"}}
-    ).success( function() {
-      $scope.refreshTasks()
-      $scope.current = undefined
-      $scope.newtask = {}
-    })
-  }
-});
+}
