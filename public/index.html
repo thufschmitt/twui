@@ -24,7 +24,7 @@
     <div class="" id="content">
       <div ng-view></div>
     </div>
-    <datalist id="projectList"> <option data-ng-repeat="proj in projects" value="{{proj}}" /> </datalist>
+    <datalist id="projectList"> <option data-ng-repeat="proj in state.projects" value="{{proj}}" /> </datalist>
   </body>
   <link rel="stylesheet" type="text/css" href="css/style.css" />
   <script type="text/javascript" src="js/task-util.js"></script>
