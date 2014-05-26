@@ -3,7 +3,7 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
                        $routeProvider
                         .when('/list', {
                           templateUrl: 'partials/list.html',
-                          controller: 'TaskCtrl',
+                          controller: 'ListCtrl',
                         })
                         .otherwise({redirectTo: '/list'})
                      })
@@ -32,7 +32,7 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
 function MainCtrl($scope) {
 }
 
-function TaskCtrl($scope, $http, stateService){
+function ListCtrl($scope, $http, stateService){
   $scope.urgency = function(task) {
     return taskUrgency(task);
   }
