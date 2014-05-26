@@ -7,23 +7,45 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
                         })
                         .otherwise({redirectTo: '/list'})
                      })
+                     .factory('stateService', function($http) {
+                       var tasks = []
+                       var projects = []
+
+                       var getTasks = function() { return tasks }
+                       var getProjects = function() { return projects }
+
+                       var refresh = function() {
+                         $http.put('/tasks')
+                         setTimeout(function () {
+                           $http.get('/tasks').success(   function (data) { tasks = data });
+                           $http.get('/projects').success(function (data) { projects = data });
+                         }, 1000)
+                       }
+
+                       return {
+                         getProjects:  getProjects,
+                         getTasks:     getTasks,
+                         refresh:      refresh,
+                       }
+                     })
 
 function MainCtrl($scope) {
 }
 
-taskApp.controller('TaskCtrl', function($scope, $http){
+taskApp.controller('TaskCtrl', ['$scope', '$http', 'stateService', function($scope, $http, stateService){
   $scope.urgency = function(task) {
     return taskUrgency(task);
   }
   $scope.taskNotDone = function(task) {
     return taskNotDone(task)
   }
-  $http.get('/tasks').success(function (data) {
-    $scope.tasks = data
-  });
-  $http.get('/projects').success(function (data) {
-    $scope.projects = data
-  });
+  stateService.refresh
+//  $http.get('/tasks').success(function (data) {
+//    $scope.tasks = data
+//  });
+//  $http.get('/projects').success(function (data) {
+//    $scope.projects = data
+//  });
   $scope.refreshTasks = function() {
     $http.put('/tasks')
     setTimeout(function () {
@@ -150,4 +172,4 @@ taskApp.controller('TaskCtrl', function($scope, $http){
       $scope.newtask = {}
     })
   }
-});
+}]);
