@@ -29,6 +29,7 @@
           <div class="due">
             <p ng-if="task.due">&lang;</p>
           </div>
+          <div class="recur" ng-if="task.recur"></div>
           <div class="summary">
             <span ng-if="task.description" class="description">{{task.description}}</span>
             <span>
