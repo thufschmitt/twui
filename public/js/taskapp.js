@@ -66,9 +66,6 @@ function MainCtrl($scope, $http, $location, stateService) {
 
 function ListCtrl($scope, $http, stateService){
   $scope.state = stateService
-  $scope.$watch("state.tasks", function(){
-    console.log($scope.state.tasks.length)
-  }, true)
   $scope.urgency = function(task) {
     return taskUrgency(task);
   }
