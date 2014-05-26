@@ -8,31 +8,33 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
                         .otherwise({redirectTo: '/list'})
                      })
                      .factory('stateService', function($http) {
-                       var tasks = []
-                       var projects = []
+                       var state = {}
+                       state.tasks = []
+                       state.projects = []
 
-                       var getTasks = function() { return tasks }
-                       var getProjects = function() { return projects }
-
-                       var refresh = function() {
+                       state.refresh = function() {
+                         console.log('refreshing tasks')
                          $http.put('/tasks')
                          setTimeout(function () {
-                           $http.get('/tasks').success(   function (data) { tasks = data });
-                           $http.get('/projects').success(function (data) { projects = data });
+                           $http.get('/tasks').success(   function (data) { state.tasks = data });
+                           $http.get('/projects').success(function (data) { state.projects = data });
                          }, 1000)
                        }
 
-                       return {
-                         getProjects:  getProjects,
-                         getTasks:     getTasks,
-                         refresh:      refresh,
-                       }
+                       $http.get('/tasks').success(   function (data) { state.tasks = data });
+                       $http.get('/projects').success(function (data) { state.projects = data });
+
+                       return state
                      })
 
 function MainCtrl($scope) {
 }
 
 function ListCtrl($scope, $http, stateService){
+  $scope.state = stateService
+  $scope.$watch("state.tasks", function(){
+    console.log($scope.state.tasks.length)
+  }, true)
   $scope.urgency = function(task) {
     return taskUrgency(task);
   }
