@@ -1,6 +1,6 @@
 <div class="col list-view scroll-y">
   <div class="task-list" id="task-list">
-    <div ng-repeat="task in tasks | filter:taskNotDone | orderBy:urgency:true"
+    <div ng-repeat="task in state.tasks | filter:taskNotDone | orderBy:urgency:true"
       ng-click="toggleCurrent(task)"
       class="task group {{task.priority}}"
       id="{{task.uuid}}">
