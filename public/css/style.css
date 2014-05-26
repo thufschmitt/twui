@@ -123,6 +123,15 @@ body {
   color: #aaa;
   font-size: 2em;
   padding: 0.3em 0.2em;
+  background: #fff;
+}
+
+.header .tab {
+  background: #111;
+}
+
+.header .active {
+  background: #333;
 }
 
 .header img {

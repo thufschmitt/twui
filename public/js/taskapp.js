@@ -5,6 +5,10 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
                           templateUrl: 'partials/list.html',
                           controller: 'ListCtrl',
                         })
+                        .when('/table', {
+                          templateUrl: 'partials/table.html',
+                          controller: 'TableCtrl'
+                        })
                         .otherwise({redirectTo: '/list'})
                      })
                      .factory('stateService', function($http) {
@@ -27,8 +31,23 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
                        return state
                      })
 
-function MainCtrl($scope, $http, stateService) {
+function MainCtrl($scope, $http, $location, stateService) {
   $scope.state = stateService
+
+  $scope.$on('$locationChangeSuccess', function() {
+    var tabs = ['list-tab', 'table-tab']
+    for(var i in tabs){
+      document.getElementById(tabs[i]).classList.remove('active')
+    }
+
+    switch($location.url()) {
+      case '/table':
+        document.getElementById('table-tab').classList.add('active')
+        break
+      default:
+        document.getElementById('list-tab').classList.add('active')
+    }
+  })
 
   $scope.undo = function() {
     $http.post('/undo',
