@@ -59,11 +59,11 @@ function ListCtrl($scope, $http, stateService){
   $scope.toggleCurrent = function(t) {
     if($scope.current === t) {
       $scope.current = undefined
-      $scope.modify = false
-      $scope.annotate = false
     } else {
       $scope.current = t
     }
+    $scope.modify = false
+    $scope.annotate = false
   }
   $scope.toggleModify = function() {
     $scope.modify = !$scope.modify
