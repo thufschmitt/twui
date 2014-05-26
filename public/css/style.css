@@ -302,6 +302,14 @@ li {
   border-radius: 0.1em;
 }
 
+.tabular-view {
+  top: 3em;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ccc;
+}
+
 @media (min-width: 960px) {
   .task {
     padding: 0.4em 0;

@@ -183,3 +183,6 @@ function ListCtrl($scope, $http, stateService){
     }
   })
 }
+
+function TableCtrl($scope, $http, stateService){
+}
