@@ -27,6 +27,7 @@ The task summary contains six indicators for the following attributes of a task.
 - Project - the text displayed in thin caps below the description ("TWUI")
 - Tags - text prefixed with a 'tag' image ("documentation")
 - Due Date - if the task has a due date 'hands' will appear in the circle to the left of the description (like a clock)
+- Recurring - if the task has a second ring it is a recurring task.
 - Annotations - if the task has annotations a count will occur to the right of the description ('[2]')
 - Priority - indicated by color
     + grey - no priority
