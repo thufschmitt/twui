@@ -25,21 +25,12 @@
 </div>
 <div ng-if="current" class="col task-detail scroll-y" id="task-detail">
   <h1>{{current.description}}</h1>
-  <p ng-if="current.project" class="project">{{current.project}}</p>
-  <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
-    <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
-  </span>
-  <ul>
-    <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
-    <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
-    <li id="task-edit" ng-click="toggleModify()">&#x270e; modify</li>
-    <li id="task-annotate" ng-click="toggleAnnotate()">+ anotate</li>
-  </ul>
-  <div ng-if="annotate" id="task-new">
-    <form ng-submit="annotateTask()">
-      <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
-      <input type="submit" class="submit" value="annotate" />
-    </form>
+  <hr />
+  <div class="current-subheading group">
+    <span ng-if="current.project" class="project">{{current.project}}</span>
+    <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
+      <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
+    </span>
   </div>
   <div ng-if="current && modify" id="task-new">
     <form ng-submit="modifyTask()">
@@ -55,8 +46,6 @@
     </form>
   </div>
   <table class="task-properties">
-    <tr><td>Description</td><td>{{current.description}}</td></tr>
-    <tr ng-if="current.project"><td>Project</td><td>{{current.project}}</td></tr>
     <tr><td>Status</td><td>{{current.status}}</td></tr>
     <tr><td>Urgency</td><td>{{urgency(current)}}</td></tr>
     <tr ng-if="current.priority"><td>Priority</td><td>{{current.priority}}</td></tr>
@@ -65,6 +54,17 @@
     <tr><td>UUID</td><td>{{current.uuid}}</td></tr>
     <tr ng-repeat="ann in current.annotations"><td>{{prettyDate(ann.entry)}}</td><td>{{ann.description}}</td></tr>
   </table>
+  <ul>
+    <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
+    <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
+    <li id="task-edit" ng-click="toggleModify()">&#x270e; modify</li>
+  </ul>
+  <div id="task-annotate" class="group">
+    <form ng-submit="annotateTask()">
+      <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
+      <input type="submit" class="submit" value="+ annotate" />
+    </form>
+  </div>
 </div>
 <div ng-if="!current" class="col task-detail scroll-y" id="task-new">
   <h1>New Task</h1>

@@ -201,7 +201,7 @@ body {
 
 .task-detail .tag-list {
   text-align: center;
-  display: block;
+  float: right;
 }
 
 .task-detail .tag {
@@ -212,18 +212,23 @@ body {
 
 .task-detail .project {
   font-size: 1.1em;
-  width: 100%;
+  width: 50%;
   display: block;
   margin-bottom: 0.75em;
-  text-align: center;
+  float: left;
 }
 
 .task-detail h1 {
   font-weight: 100;
   font-size: 1.5em;
   text-align: center;
-  max-width: 75%;
+  max-width: 65%;
   margin: 1em auto;
+}
+
+.current-subheading {
+  width: 60%;
+  margin: 0 auto 1em;
 }
 
 table {
@@ -312,6 +317,39 @@ li {
   left: 0;
   right: 0;
   background: #333;
+}
+
+hr {
+  width: 60%;
+  border: 1px solid #ccc;
+  margin: 0.5em auto 2em;
+}
+
+#task-annotate {
+  display: block;
+  width: 45%;
+  margin: 0 auto;
+}
+
+#task-annotate form > * {
+  border-radius: 0.1em;
+  border: 1px solid #999;
+}
+
+#task-annotate #new-annotation{
+  font-size: 1.2em;
+  padding: 0.4em;
+  float: left;
+  width: 95%;
+}
+
+#task-annotate .submit {
+  float: right;
+  clear: both;
+  font-size: 0.5em;
+  background: #ccc;
+  padding: 0.6em;
+  margin-top: 0.5em;
 }
 
 @media (min-width: 960px) {
