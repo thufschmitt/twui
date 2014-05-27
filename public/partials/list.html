@@ -55,8 +55,6 @@
     </form>
   </div>
   <table class="task-properties">
-    <tr><td>Description</td><td>{{current.description}}</td></tr>
-    <tr ng-if="current.project"><td>Project</td><td>{{current.project}}</td></tr>
     <tr><td>Status</td><td>{{current.status}}</td></tr>
     <tr><td>Urgency</td><td>{{urgency(current)}}</td></tr>
     <tr ng-if="current.priority"><td>Priority</td><td>{{current.priority}}</td></tr>
