@@ -32,12 +32,6 @@
       <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
     </span>
   </div>
-  <ul>
-    <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
-    <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
-    <li id="task-edit" ng-click="toggleModify()">&#x270e; modify</li>
-    <li id="task-annotate" ng-click="toggleAnnotate()">+ anotate</li>
-  </ul>
   <div ng-if="annotate" id="task-new">
     <form ng-submit="annotateTask()">
       <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
@@ -66,6 +60,12 @@
     <tr><td>UUID</td><td>{{current.uuid}}</td></tr>
     <tr ng-repeat="ann in current.annotations"><td>{{prettyDate(ann.entry)}}</td><td>{{ann.description}}</td></tr>
   </table>
+  <ul>
+    <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
+    <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
+    <li id="task-edit" ng-click="toggleModify()">&#x270e; modify</li>
+    <li id="task-annotate" ng-click="toggleAnnotate()">+ anotate</li>
+  </ul>
 </div>
 <div ng-if="!current" class="col task-detail scroll-y" id="task-new">
   <h1>New Task</h1>
