@@ -25,7 +25,7 @@
 </div>
 <div ng-if="current" class="col task-detail scroll-y" id="task-detail">
   <h1>{{current.description}}</h1>
-  <hr />
+  <hr ng-if="current.project || current.tags.length > 0" />
   <div class="current-subheading group">
     <span ng-if="current.project" class="project">{{current.project}}</span>
     <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
