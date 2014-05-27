@@ -26,10 +26,12 @@
 <div ng-if="current" class="col task-detail scroll-y" id="task-detail">
   <h1>{{current.description}}</h1>
   <hr />
-  <p ng-if="current.project" class="project">{{current.project}}</p>
-  <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
-    <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
-  </span>
+  <div class="current-subheading group">
+    <span ng-if="current.project" class="project">{{current.project}}</span>
+    <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
+      <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
+    </span>
+  </div>
   <ul>
     <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
     <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
