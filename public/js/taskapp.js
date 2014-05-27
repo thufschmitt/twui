@@ -161,7 +161,7 @@ function ListCtrl($scope, $http, stateService){
         console.log('Annotation Successful')
         $scope.annotate = false
         $scope.newAnnotation = {}
-        $scope.refreshTasks()
+        $scope.state.refresh()
       })
     }
   }
