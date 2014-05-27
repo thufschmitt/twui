@@ -32,12 +32,6 @@
       <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>
     </span>
   </div>
-  <div ng-if="annotate" id="task-new">
-    <form ng-submit="annotateTask()">
-      <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
-      <input type="submit" class="submit" value="annotate" />
-    </form>
-  </div>
   <div ng-if="current && modify" id="task-new">
     <form ng-submit="modifyTask()">
       <input ng-model="current.description" type="text" placeholder="Pick up milk" id="new-description"/>
@@ -64,8 +58,13 @@
     <li id="task-done" ng-click="finishTask(current)">&#10004;  done</li>
     <li id="task-delete" ng-click="deleteTask(current)">&#10008; delete</li>
     <li id="task-edit" ng-click="toggleModify()">&#x270e; modify</li>
-    <li id="task-annotate" ng-click="toggleAnnotate()">+ anotate</li>
   </ul>
+  <div id="task-annotate" class="group">
+    <form ng-submit="annotateTask()">
+      <input ng-model="newAnnotation.description" type="text" id="new-annotation"/>
+      <input type="submit" class="submit" value="+ annotate" />
+    </form>
+  </div>
 </div>
 <div ng-if="!current" class="col task-detail scroll-y" id="task-new">
   <h1>New Task</h1>

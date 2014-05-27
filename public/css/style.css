@@ -325,6 +325,33 @@ hr {
   margin: 0.5em auto 2em;
 }
 
+#task-annotate {
+  display: block;
+  width: 45%;
+  margin: 0 auto;
+}
+
+#task-annotate form > * {
+  border-radius: 0.1em;
+  border: 1px solid #999;
+}
+
+#task-annotate #new-annotation{
+  font-size: 1.2em;
+  padding: 0.4em;
+  float: left;
+  width: 95%;
+}
+
+#task-annotate .submit {
+  float: right;
+  clear: both;
+  font-size: 0.5em;
+  background: #ccc;
+  padding: 0.6em;
+  margin-top: 0.5em;
+}
+
 @media (min-width: 960px) {
   .task {
     padding: 0.4em 0;
