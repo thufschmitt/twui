@@ -25,6 +25,7 @@
 </div>
 <div ng-if="current" class="col task-detail scroll-y" id="task-detail">
   <h1>{{current.description}}</h1>
+  <hr />
   <p ng-if="current.project" class="project">{{current.project}}</p>
   <span ng-if="current.tags && current.tags.length > 0" class="tag-list group">
     <span ng-repeat="tag in current.tags" class="tag">{{tag}}</span>

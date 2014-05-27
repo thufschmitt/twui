@@ -222,7 +222,7 @@ body {
   font-weight: 100;
   font-size: 1.5em;
   text-align: center;
-  max-width: 75%;
+  max-width: 65%;
   margin: 1em auto;
 }
 
@@ -312,6 +312,12 @@ li {
   left: 0;
   right: 0;
   background: #333;
+}
+
+hr {
+  width: 60%;
+  border: 1px solid #ccc;
+  margin: 0.5em auto 2em;
 }
 
 @media (min-width: 960px) {
