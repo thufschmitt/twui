@@ -25,6 +25,22 @@ var taskApp = angular.module('taskApp', ['ngRoute'])
                          }, 1000)
                        }
 
+                       state.urgency = function(task) {
+                         return taskUrgency(task);
+                       }
+
+                       state.taskNotDone = function(task) {
+                         return taskNotDone(task)
+                       }
+
+                       state.prettyDate = function(d) {
+                         var year  = d.slice(0,4)
+                         var month = d.slice(4,6)
+                         var day   = d.slice(6,8)
+                         var date = new Date(Date.UTC(year, month, day))
+                         return date.toLocaleDateString();
+                       }
+
                        $http.get('/tasks').success(   function (data) { state.tasks = data });
                        $http.get('/projects').success(function (data) { state.projects = data });
 
@@ -66,12 +82,10 @@ function MainCtrl($scope, $http, $location, stateService) {
 
 function ListCtrl($scope, $http, stateService){
   $scope.state = stateService
-  $scope.urgency = function(task) {
-    return taskUrgency(task);
-  }
-  $scope.taskNotDone = function(task) {
-    return taskNotDone(task)
-  }
+  $scope.urgency = stateService.urgency
+  $scope.taskNotDone = stateService.taskNotDone
+  $scope.prettyDate = stateService.prettyDate
+
   $scope.toggleCurrent = function(t) {
     if($scope.current === t) {
       $scope.current = undefined
@@ -98,13 +112,6 @@ function ListCtrl($scope, $http, stateService){
       document.getElementById($scope.current.uuid).classList.add('active')
     }
   }, true);
-  $scope.prettyDate = function(d) {
-    var year  = d.slice(0,4)
-    var month = d.slice(4,6)
-    var day   = d.slice(6,8)
-    var date = new Date(Date.UTC(year, month, day))
-    return date.toLocaleDateString();
-  }
   $scope.finishTask = function(task) {
     $http.post('/tasks/' + task.uuid,
            { headers: {"Content-Type": "application/json; charset=UTF-8"}}
@@ -185,4 +192,8 @@ function ListCtrl($scope, $http, stateService){
 }
 
 function TableCtrl($scope, $http, stateService){
+  $scope.state = stateService
+  $scope.urgency = stateService.urgency
+  $scope.taskNotDone = stateService.taskNotDone
+  $scope.prettyDate = stateService.prettyDate
 }

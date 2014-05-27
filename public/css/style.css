@@ -239,6 +239,10 @@ td {
   font-weight: 600;
 }
 
+tr {
+  background: #fff;
+}
+
 tr:nth-child(even) {
   background: #eee;
 }
@@ -307,7 +311,7 @@ li {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #ccc;
+  background: #333;
 }
 
 @media (min-width: 960px) {

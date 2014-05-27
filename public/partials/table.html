@@ -1,3 +1,20 @@
 <div class="col tabular-view scroll-y">
-  <p> </p>
+  <table>
+    <tr>
+      <th>Proj</th>
+      <th>Pri</th>
+      <th>Due</th>
+      <th>Active</th>
+      <th>Age</th>
+      <th>Description</th>
+    </tr>
+    <tr ng-repeat="task in state.tasks | filter:taskNotDone | orderBy:urgency:true">
+      <td>{{task.project}}</td>
+      <td>{{task.priority}}</td>
+      <td>{{prettyDate(task.due)}}</td>
+      <td></td>
+      <td></td>
+      <td>{{task.description}}</td>
+    </tr>
+  </table>
 </div>
