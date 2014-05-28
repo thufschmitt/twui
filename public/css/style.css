@@ -319,6 +319,16 @@ li {
   background: #333;
 }
 
+.tabular-view th {
+  padding: 0.5em;
+  border-bottom: 1px solid #aaa;
+}
+
+.tabular-view td {
+  font-size: 1.0em;
+  padding: 0.5em;
+}
+
 hr {
   width: 60%;
   border: 1px solid #ccc;
