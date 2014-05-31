@@ -97,6 +97,12 @@ function ListCtrl($scope, $http, stateService){
   }
   $scope.toggleModify = function() {
     $scope.modify = !$scope.modify
+    var button = document.getElementById('task-edit')
+    if($scope.modify) {
+      button.innerHTML = '&#x270e; cancel'
+    } else {
+      button.innerHTML = '&#x270e; modify'
+    }
   }
   $scope.toggleAnnotate = function() {
     $scope.annotate = !$scope.annotate
