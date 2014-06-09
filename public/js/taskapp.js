@@ -1,55 +1,57 @@
-var taskApp = angular.module('taskApp', ['ngRoute'])
-                     .config(function($routeProvider) {
-                       $routeProvider
-                        .when('/list', {
-                          templateUrl: 'partials/list.html',
-                          controller: 'ListCtrl',
-                        })
-                        .when('/table', {
-                          templateUrl: 'partials/table.html',
-                          controller: 'TableCtrl'
-                        })
-                        .otherwise({redirectTo: '/list'})
-                     })
-                     .factory('stateService', function($http) {
-                       var state = {}
-                       state.tasks = []
-                       state.projects = []
+var taskApp = angular.module('taskApp', ['ui.router']);
+taskApp.config(function($stateProvider, $urlRouterProvider) {
+  $urlRouterProvider.otherwise("/list");
+  $stateProvider
+    .state('list', {
+      url: "/list",
+      templateUrl: "partials/list.html",
+      controller: ListCtrl
+    })
+    .state('table', {
+      url: "/table",
+      templateUrl: "partials/table.html",
+      controller: TableCtrl
+    })
+});
 
-                       state.refresh = function() {
-                         console.log('refreshing tasks')
-                         $http.put('/tasks')
-                         setTimeout(function () {
-                           $http.get('/tasks').success(   function (data) { state.tasks = data });
-                           $http.get('/projects').success(function (data) { state.projects = data });
-                         }, 1000)
-                       }
+taskApp.factory('stateService', function($http) {
+  var state = {}
+  state.tasks = []
+  state.projects = []
+  state.refresh = function() {
+    console.log('refreshing tasks')
+    $http.put('/tasks')
+    setTimeout(function () {
+      $http.get('/tasks').success(function (data) { state.tasks = data });
+      $http.get('/projects').success(function (data) { state.projects = data });
+    }, 1000)
+  }
 
-                       state.urgency = function(task) {
-                         return taskUrgency(task);
-                       }
+  state.urgency = function(task) {
+    return taskUrgency(task);
+  }
 
-                       state.taskNotDone = function(task) {
-                         return taskNotDone(task)
-                       }
+  state.taskNotDone = function(task) {
+    return taskNotDone(task)
+  }
 
-                       state.prettyDate = function(d) {
-                         var year  = d.slice(0,4)
-                         var month = d.slice(4,6)
-                         var day   = d.slice(6,8)
-                         var date = new Date(Date.UTC(year, month, day))
-                         return date.toLocaleDateString();
-                       }
+  state.prettyDate = function(d) {
+    if(!d) return ''
+    var year  = d.slice(0,4)
+    var month = d.slice(4,6)
+    var day   = d.slice(6,8)
+    var date = new Date(Date.UTC(year, month, day))
+    return date.toLocaleDateString();
+  }
 
-                       $http.get('/tasks').success(   function (data) { state.tasks = data });
-                       $http.get('/projects').success(function (data) { state.projects = data });
+  $http.get('/tasks').success(   function (data) { state.tasks = data });
+  $http.get('/projects').success(function (data) { state.projects = data });
 
-                       return state
-                     })
+  return state
+});
 
-function MainCtrl($scope, $http, $location, stateService) {
-  $scope.state = stateService
 
+function MainCtrl($scope, $location, stateService, $http) {
   $scope.$on('$locationChangeSuccess', function() {
     var tabs = ['list-tab', 'table-tab']
     for(var i in tabs){
@@ -67,20 +69,17 @@ function MainCtrl($scope, $http, $location, stateService) {
 
   $scope.undo = function() {
     $http.post('/undo',
-        { headers: {"Content-Type": "application/json; charset=UTF-8"}}
+      {headers: {"Content-Type": "application/json; charset=UTF-8"}}
     ).success( function() {
-      $scope.state.refresh()
-      $scope.current = undefined
-      $scope.newtask = {}
     })
   }
 
   $scope.refreshTasks = function() {
-    $scope.state.refresh()
+    stateService.refresh()
   }
 }
 
-function ListCtrl($scope, $http, stateService){
+function ListCtrl($scope, $http, stateService) {
   $scope.state = stateService
   $scope.urgency = stateService.urgency
   $scope.taskNotDone = stateService.taskNotDone
@@ -197,7 +196,7 @@ function ListCtrl($scope, $http, stateService){
   })
 }
 
-function TableCtrl($scope, $http, stateService){
+function TableCtrl($scope, stateService, $http) {
   $scope.state = stateService
   $scope.urgency = stateService.urgency
   $scope.taskNotDone = stateService.taskNotDone
