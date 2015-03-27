@@ -1,31 +1,43 @@
 <!doctype html>
-<html ng-app="taskApp">
   <link rel="shortcut icon" href="images/favicon.ico" />
   <meta charset="UTF-8">
   <title>twui</title>
+  <script type="text/javascript" src="js/main.js"></script>
+  <script>
+  (function(){
+    var cache = {};
 
-  <script type="text/javascript" src="js/angular.min.js"></script>
-  <script type="text/javascript" src="js/angular-ui-router.min.js"></script>
-  <script type="text/javascript" src="js/taskapp.js"></script>
+    this.tmpl = function tmpl(str, data){
+      var fn = !/\W/.test(str) ?
+        cache[str] = cache[str] ||
+        tmpl(document.getElementById(str).innerHTML) :
+        new Function("obj",
+            "var p=[],print=function(){p.push.apply(p,arguments);};" +
+            "with(obj){p.push('" +
+            str
+            .replace(/[\r\t\n]/g, " ")
+            .split("<%").join("\t")
+            .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+            .replace(/\t=(.*?)%>/g, "',$1,'")
+            .split("\t").join("');")
+            .split("%>").join("p.push('")
+            .split("\r").join("\\'")
+            + "');}return p.join('');");
+      return data ? fn( data ) : fn;
+    };
+  })();
+  </script>
 
-  <body ng-controller="MainCtrl">
-    <nav class="row header">
-      <a id="refresh-button" class="refresh button" ng-click="refreshTasks()">
-        <img src="images/refresh.svg" alt="refresh button" />
-      </a><a id="undo-button" class="undo button" ng-click="undo()">
-        <img src="images/undo.svg" alt="undo button" />
-      </a><a id="list-tab" class="list tab active" ui-sref="list" />
-        <img src="images/list.svg" alt="list tab" />
-      </a><a id="table-tab" class="table tab" ui-sref="table" />
-        <img src="images/table.svg" alt="table tab" />
-      </a>
-      <span class="credit">A <a href="http://rampantmonkey.com">rampantmonkey</a> creation</span>
-    </nav>
-    <div class="" id="content">
-      <div ui-view></div>
-    </div>
-    <datalist id="projectList"> <option data-ng-repeat="proj in state.projects" value="{{proj}}" /> </datalist>
-  </body>
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
-  <script type="text/javascript" src="js/task-util.js"></script>
-</html>
+  <script type="text/html" id="home">
+    <h1>Router FTW!</h1>
+  </script>
+  <script type="text/html" id="template1">
+    <h1>Page 1: <%= greeting %></h1>
+    <p><%= moreText %></p>
+  </script>
+  <script type="text/html" id="template2">
+    <h1>Page 2: <%= heading %></h1>
+    <p>Lorem ipsum...</p>
+  </script>
+
+  <div id="view"></div>
