@@ -1,9 +1,10 @@
 package main
 
 import (
-	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os/exec"
@@ -42,21 +43,16 @@ func fetchTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var tasks []string
+	var tasks []Task
+	decoder := json.NewDecoder(bytes.NewReader(rawTasks))
 	for {
-		i, token, err := bufio.ScanLines(rawTasks, false)
-		if err != nil {
+		if err := decoder.Decode(&tasks); err == io.EOF {
+			break
+		} else if err != nil {
 			log.Printf("malformed task warrior data: %v\n", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-
-		if i == 0 {
-			break
-		}
-
-		rawTasks = rawTasks[i:]
-		tasks = append(tasks, string(token))
 	}
 
 	tasksJSON, err := json.Marshal(tasks)
