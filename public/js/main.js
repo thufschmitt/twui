@@ -4,7 +4,19 @@
     routes[path] = {templateId: templateId, controller: controller};
   }
 
-  route('/', 'home', function(){})
+  route('/', 'home', function(){
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("error", function() {
+      console.log("failed to fetch tasks")
+    }, false);
+    xhr.addEventListener("load", function(){
+      var data = JSON.parse(xhr.responseText);
+      console.log(data);
+      // display list
+    }, false);
+    xhr.open("GET", "/tasks", true);
+    xhr.send();
+  });
   route('/page1', 'template1', function(){
     this.greeting = 'Hello world!';
     this.moreText = 'Bacon ipsum...';
