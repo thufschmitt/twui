@@ -16,6 +16,11 @@
   <h1>Page 2: {{ heading }}</h1>
   <p>Lorem ipsum...</p>
 </script>
+<script type="text/html" id="taskListEntry">
+  <div class="task group {{task.priority}}" id="{{task.uuid}}">
+    {{task.description}}
+  </div>
+</script>
 
 <nav class="row header">
   <a id="refreshButton">Refresh</a>

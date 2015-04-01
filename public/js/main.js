@@ -4,15 +4,44 @@
     routes[path] = {templateId: templateId, controller: controller};
   }
 
+  var tasks = {}
+
   route('/', 'home', function(){
     var xhr = new XMLHttpRequest();
     xhr.addEventListener("error", function() {
       console.log("failed to fetch tasks")
     }, false);
     xhr.addEventListener("load", function(){
-      var data = JSON.parse(xhr.responseText);
+      try {
+        var data = JSON.parse(xhr.responseText);
+        data.sort(function(a,b) {
+          if (a.urgency < b.urgency) {
+            return 1;
+          } else if (a.urgency > b.urgency) {
+            return -1;
+          }
+          return 0;
+        })
+        tasks = data
+      } catch(e) {
+        alert(e)
+        return
+      }
       console.log(data);
-      // display list
+      var container = document.createElement('div')
+      for(var i = 0, l = tasks.length; i < l; i++) {
+        var task = tasks[i]
+        if (task.status === 'deleted' || task.status === 'completed') {
+          continue
+        }
+        container.innerHTML += tmpl("taskListEntry", new function(){
+          this.task = task;
+        }())
+      }
+      el = document.getElementById('view')
+      if(el) {
+        el.appendChild(container)
+      }
     }, false);
     xhr.open("GET", "/tasks", true);
     xhr.send();
