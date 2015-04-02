@@ -21,7 +21,7 @@
 </script>
 <script type="text/html" id="taskListEntry">
   <div class="task group {{task.priority}}" id="{{task.uuid}}">
-    {{ task.due && "<p>&lang;</p>" }}
+    <div class="due">{{ task.due && "<p>&lang;</p>" }}</div>
     {{ task.recur && '<div class="recur"></div>' }}
     <div class="summary">
       {{ task.description && '<span class="description">' + task.description + "</span>" }}
