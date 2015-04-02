@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -22,6 +23,7 @@ const (
 var (
 	Commit string
 	Version string
+	taskDataDir string
 )
 
 func main() {
@@ -52,7 +54,13 @@ func main() {
 
 func fetchTasks(w http.ResponseWriter, r *http.Request) {
 	cmd := exec.Command(taskExeName, "export")
-	cmd.Env = nil
+	var env []string
+	for _, v := range os.Environ() {
+		if strings.HasPrefix(v, "TASKDATA=") {
+			env = append(env, v)
+		}
+	}
+	cmd.Env = env
 	rawTasks, err := cmd.Output()
 	if err != nil {
 		log.Printf("task warrior failed: %v\n", err)
