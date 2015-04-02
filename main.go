@@ -3,10 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"strconv"
 )
@@ -17,7 +19,21 @@ const (
 	defaultPort = 2718
 )
 
+var (
+	Commit string
+	Version string
+)
+
 func main() {
+	version := flag.Bool("v", false, "display version info and exit")
+
+	flag.Parse()
+
+	if *version {
+		fmt.Fprintf(os.Stdout, "twui\n\tcommit-id: %s\n\tversion: %s\n", Commit, Version)
+		os.Exit(0)
+	}
+
 	fs := http.FileServer(http.Dir("public"))
 	http.Handle("/", fs)
 
