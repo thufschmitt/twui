@@ -1,25 +1,28 @@
-REPORTER = spec
-JQUERY_VERSION = 2.1.1.min
-ANGULAR_VERSION = 1.2.1
+COMMIT := $(shell git rev-parse --short HEAD)
+DIRTY := $(shell git diff --shortstat 2>/dev/null | tail -n1)
+VERSION := "v0.2.0-dev"
 
-test: node_modules
-	@NODE_ENV=test ./node_modules/.bin/mocha test/*-test.js --reporter $(REPORTER)
+ifeq ($(DIRTY),)
+LDFLAGS := -X main.Commit \"$(COMMIT)\"\
+           -X main.Version \"$(VERSION)\"
+else
+LDFLAGS := -X main.Commit \"$(COMMIT)+\"\
+           -X main.Version \"$(VERSION)\"
+endif
 
-node_modules:
-	npm install
+GOOS := $(shell go env GOOS)
+GOARCH := $(shell go env GOARCH)
 
-deploy: public/js/jquery-$(JQUERY_VERSION).js public/js/angular.min.js public/js/angular-ui-router.min.js
+GOSRCS = main.go task.go
 
-public/js/jquery-$(JQUERY_VERSION).js:
-	@mkdir -p public/js
-	curl http://code.jquery.com/jquery-$(JQUERY_VERSION).js > $@
+.PHONY: clean build default
 
-public/js/angular.min.js:
-	@mkdir -p public/js
-	curl http://cdnjs.cloudflare.com/ajax/libs/angular.js/$(ANGULAR_VERSION)/angular.min.js > $@
+default: build
 
-public/js/angular-ui-router.min.js:
-	@mkdir -p public/js
-	curl http://angular-ui.github.io/ui-router/release/angular-ui-router.js > $@
+build: bin/twui
 
-.PHONY: test deploy
+bin/twui: $(GOSRCS)
+	@go build -ldflags "$(LDFLAGS)" -o $@
+
+clean:
+	@rm -rf bin
