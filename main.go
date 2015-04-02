@@ -26,6 +26,7 @@ var (
 
 func main() {
 	version := flag.Bool("v", false, "display version info and exit")
+	port := flag.Int("port", defaultPort, "port to listen on")
 
 	flag.Parse()
 
@@ -46,7 +47,7 @@ func main() {
 		}
 	})
 
-	log.Fatal(http.ListenAndServe(":" + strconv.Itoa(defaultPort), nil))
+	log.Fatal(http.ListenAndServe(":" + strconv.Itoa(*port), nil))
 }
 
 func fetchTasks(w http.ResponseWriter, r *http.Request) {
