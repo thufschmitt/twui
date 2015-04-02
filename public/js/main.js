@@ -38,7 +38,7 @@
           this.task = task;
         }())
       }
-      el = document.getElementById('view')
+      el = document.getElementById('task-list')
       if(el) {
         el.appendChild(container)
       }
