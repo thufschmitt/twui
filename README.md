@@ -63,5 +63,5 @@ The simple solution is to create a symlink `ln -s /usr/bin/nodejs  /usr/bin/node
 But for those afraid of the file system a package is available to perform the same action - `apt-get install nodejs-legacy`.
 
 ## License
-_This software - &copy; Casey Robinson 2014 - is released under the MIT license._
-You can find a copy in [LICENSE.txt](LICENSE.txt) or at [opensource.org](http://opensource.org/licenses/MIT).
+_This software is released under the WTFPL._
+You can find a copy in [LICENSE.txt](LICENSE.txt) or at [wtfpl.net](http://www.wtfpl.net/txt/copying/).
