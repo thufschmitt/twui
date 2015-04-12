@@ -13,7 +13,7 @@ endif
 GOOS := $(shell go env GOOS)
 GOARCH := $(shell go env GOARCH)
 
-GOSRCS = main.go task.go
+GOSRCS = $(shell find . -name '*.go')
 
 .PHONY: clean build default
 
