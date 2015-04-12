@@ -41,6 +41,9 @@ type Annotation struct {
 // FetchTasks returns a filtered list of tasks exported from taskwarrior
 func FetchTasks(filter string) ([]Task, error) {
 	cmd := exec.Command(taskExeName, "export")
+	if len(filter) > 0 {
+		cmd = exec.Command(taskExeName, "export", filter)
+	}
 	var env []string
 	for _, v := range os.Environ() {
 		if strings.HasPrefix(v, "TASKDATA=") {
