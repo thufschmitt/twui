@@ -41,6 +41,13 @@ The filter syntax is identical to taskwarrior's syntax.
 const (
 	defaultOutputFilename = "task_graph.png"
 	penWidth = 1
+	blockedColor = "#BA8BAF"
+	maxUrgencyColor = "#DC9656"
+	unblockedColor = "#7CAFC2"
+	doneColor = "#B8B8B8"
+	waitColor = "#A16946"
+	deletedColor = "#86C1B9"
+	defaultColor = "#F8F8F8"
 )
 
 var outputFilepath string
@@ -99,13 +106,34 @@ func runGraph(c *Command, args []string) {
 func generateDigraph(tasks []Task) []byte {
 	dg := []byte("digraph dependencies { splines=true; overlap=ortho; rankdir=LR; weight=2;")
 
+	validUUIDs := make(map[string]bool)
 	for _, task := range tasks {
+		validUUIDs[task.UUID] = true
 		style := "filled"
-		color := "white"
-		dg = append(dg, []byte(fmt.Sprintf("\"%s\"[shape=box][penwidth=%d][label=\"%d:%s\"][fillcolor=%s][style=%s]\n",
+		color := ""
+		prefix := ""
+
+		switch task.Status {
+		case "pending":
+			prefix = fmt.Sprintf("%d", task.Id)
+			color = unblockedColor
+		case "waiting":
+			prefix = "WAIT"
+			color = waitColor
+		case "completed":
+			prefix = "DONE"
+			color = doneColor
+		case "deleted":
+			prefix = "DELETED"
+			color = deletedColor
+		default:
+			color = defaultColor
+		}
+
+		dg = append(dg, []byte(fmt.Sprintf("\"%s\"[shape=box][penwidth=%d][label=\"%s:%s\"][fillcolor=\"%s\"][style=%s]\n",
 		                       task.UUID,
 				       penWidth,
-				       task.Id,
+				       prefix,
 				       task.Description,
 				       color,
 				       style))...)
@@ -113,6 +141,9 @@ func generateDigraph(tasks []Task) []byte {
 
 	for _, task := range tasks {
 		for _, dep := range task.Dependencies() {
+			if !validUUIDs[dep] {
+				continue
+			}
 			dg = append(dg, []byte(fmt.Sprintf("\"%s\" -> \"%s\";\n", dep, task.UUID))...)
 		}
 	}
