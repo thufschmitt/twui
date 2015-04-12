@@ -111,6 +111,12 @@ func generateDigraph(tasks []Task) []byte {
 				       style))...)
 	}
 
+	for _, task := range tasks {
+		for _, dep := range task.Dependencies() {
+			dg = append(dg, []byte(fmt.Sprintf("\"%s\" -> \"%s\";\n", dep, task.UUID))...)
+		}
+	}
+
 	dg = append(dg, '}')
 	return dg
 }

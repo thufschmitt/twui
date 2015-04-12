@@ -33,6 +33,11 @@ type Task struct {
 	Urgency     float32      `json:"urgency"`
 }
 
+// Dependencies returns a slice of UUIDs that the task depends on
+func (t Task) Dependencies() []string {
+	return strings.Split(t.Depends, ",")
+}
+
 type Annotation struct {
 	Entry       string `json:"entry"`
 	Description string `json:"description"`
