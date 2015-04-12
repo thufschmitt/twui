@@ -7,11 +7,23 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 )
 
 func init() {
 	cmdGraph.Run = runGraph
+
+	if runtime.GOOS == "windows" {
+		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
+		if home == "" {
+			home = os.Getenv("USERPROFILE")
+		}
+		outputFilepath = home
+	} else {
+		outputFilepath = os.Getenv("HOME")
+	}
+	outputFilepath += "/" + defaultOutputFilename
 }
 
 var cmdGraph = &Command {
@@ -27,9 +39,11 @@ The filter syntax is identical to taskwarrior's syntax.
 }
 
 const (
-	outputFilename = "task_graph.png"
+	defaultOutputFilename = "task_graph.png"
 	penWidth = 1
 )
+
+var outputFilepath string
 
 func runGraph(c *Command, args []string) {
 	filter := strings.Join(args, " ")
@@ -67,7 +81,7 @@ func runGraph(c *Command, args []string) {
 		}
 	}(digraph, stdin)
 
-	out, err := os.Create(outputFilename)
+	out, err := os.Create(outputFilepath)
 	if err != nil {
 		log.Fatal(err)
 	}
