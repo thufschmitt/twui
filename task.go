@@ -1,5 +1,15 @@
 package main
 
+import (
+	"bytes"
+	"encoding/json"
+	"io"
+	"log"
+	"os"
+	"os/exec"
+	"strings"
+)
+
 type Task struct {
 	Id          int          `json:"id"`
 	Status      string       `json:"status"`
@@ -26,4 +36,34 @@ type Task struct {
 type Annotation struct {
 	Entry       string `json:"entry"`
 	Description string `json:"description"`
+}
+
+// FetchTasks returns a filtered list of tasks exported from taskwarrior
+func FetchTasks(filter string) ([]Task, error) {
+	cmd := exec.Command(taskExeName, "export")
+	var env []string
+	for _, v := range os.Environ() {
+		if strings.HasPrefix(v, "TASKDATA=") {
+			env = append(env, v)
+		}
+	}
+	cmd.Env = env
+	rawTasks, err := cmd.Output()
+	if err != nil {
+		log.Printf("task warrior failed: %v\n", err)
+		return nil, err
+	}
+
+	var tasks []Task
+	decoder := json.NewDecoder(bytes.NewReader(rawTasks))
+	for {
+		if err := decoder.Decode(&tasks); err == io.EOF {
+			break
+		} else if err != nil {
+			log.Printf("malformed task warrior data: %v\n", err)
+			return nil, err
+		}
+	}
+
+	return tasks, nil
 }
