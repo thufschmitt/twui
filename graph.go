@@ -107,9 +107,13 @@ func generateDigraph(tasks []Task) []byte {
 	dg := []byte("digraph dependencies { splines=true; overlap=ortho; rankdir=LR; weight=2;")
 
 	pendingUUIDs := make(map[string]bool)
+	maxUrgency := float32(-999.9);
 	for _, task := range tasks {
 		if task.Status == "pending" {
 			pendingUUIDs[task.UUID] = true
+			if task.Urgency > maxUrgency {
+				maxUrgency = task.Urgency
+			}
 		}
 	}
 
@@ -141,6 +145,10 @@ func generateDigraph(tasks []Task) []byte {
 			color = deletedColor
 		default:
 			color = defaultColor
+		}
+
+		if task.Urgency == maxUrgency {
+			color = maxUrgencyColor
 		}
 
 		dg = append(dg, []byte(fmt.Sprintf("\"%s\"[shape=box][penwidth=%d][label=\"%s:%s\"][fillcolor=\"%s\"][style=%s]\n",
