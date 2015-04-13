@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"strings"
 )
 
 func init() {
@@ -53,8 +52,7 @@ const (
 var outputFilepath string
 
 func runGraph(c *Command, args []string) {
-	filter := strings.Join(args, " ")
-	tasks, err := FetchTasks(filter)
+	tasks, err := FetchTasks(args...)
 	if err != nil {
 		log.Fatalf("Error fetching tasks\n")
 	}

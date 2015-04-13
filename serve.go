@@ -56,7 +56,7 @@ func runServe(c *Command, args []string) {
 }
 
 func encodeTasks(w http.ResponseWriter, r *http.Request) {
-	tasks, err := FetchTasks("")
+	tasks, err := FetchTasks()
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
