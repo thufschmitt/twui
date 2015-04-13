@@ -16,6 +16,7 @@ import (
 // commands lists the available commands and help topics printed in order.
 var commands = []*Command{
 	cmdServe,
+	cmdGraph,
 	cmdVersion,
 }
 
