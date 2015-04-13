@@ -106,6 +106,13 @@ func runGraph(c *Command, args []string) {
 func generateDigraph(tasks []Task) []byte {
 	dg := []byte("digraph dependencies { splines=true; overlap=ortho; rankdir=LR; weight=2;")
 
+	pendingUUIDs := make(map[string]bool)
+	for _, task := range tasks {
+		if task.Status == "pending" {
+			pendingUUIDs[task.UUID] = true
+		}
+	}
+
 	validUUIDs := make(map[string]bool)
 	for _, task := range tasks {
 		validUUIDs[task.UUID] = true
@@ -117,6 +124,12 @@ func generateDigraph(tasks []Task) []byte {
 		case "pending":
 			prefix = fmt.Sprintf("%d", task.Id)
 			color = unblockedColor
+			for _, dep := range task.Dependencies() {
+				if pendingUUIDs[dep] {
+					color = blockedColor
+					break
+				}
+			}
 		case "waiting":
 			prefix = "WAIT"
 			color = waitColor
