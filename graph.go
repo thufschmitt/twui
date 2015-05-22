@@ -12,17 +12,17 @@ import (
 
 func init() {
 	cmdGraph.Run = runGraph
+	cmdGraph.Flag.StringVar(&outputFileName, "o", defaultOutputFilename, "filename (relative to home directory) in which to write image")
 
 	if runtime.GOOS == "windows" {
 		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
 		if home == "" {
 			home = os.Getenv("USERPROFILE")
 		}
-		outputFilepath = home
+		outputFileDir = home
 	} else {
-		outputFilepath = os.Getenv("HOME")
+		outputFileDir = os.Getenv("HOME")
 	}
-	outputFilepath += "/" + defaultOutputFilename
 }
 
 var cmdGraph = &Command {
@@ -49,7 +49,8 @@ const (
 	defaultColor = "#F8F8F8"
 )
 
-var outputFilepath string
+var outputFileDir string
+var outputFileName string
 
 func runGraph(c *Command, args []string) {
 	tasks, err := FetchTasks(args...)
@@ -86,7 +87,7 @@ func runGraph(c *Command, args []string) {
 		}
 	}(digraph, stdin)
 
-	out, err := os.Create(outputFilepath)
+	out, err := os.Create(outputFileDir + "/" + outputFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
